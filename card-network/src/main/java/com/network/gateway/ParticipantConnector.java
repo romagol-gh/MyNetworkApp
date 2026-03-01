@@ -6,9 +6,12 @@ import com.network.iso8583.MessageFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -17,9 +20,15 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Manages outbound TCP connections to issuer banks and forwards ISO 8583 messages to them.
+ *
+ * Uses an anonymous ChannelInitializer (not the Spring-managed GatewayChannelInitializer)
+ * to avoid Spring CGLIB proxy interaction with Netty's final channelRegistered() method.
+ * The cycle AuthorizationService → ParticipantConnector → GatewayMessageHandler →
+ * AuthorizationService is broken by @Lazy on GatewayMessageHandler.
  */
 @Component
 public class ParticipantConnector {
@@ -27,17 +36,17 @@ public class ParticipantConnector {
     private static final Logger log = LoggerFactory.getLogger(ParticipantConnector.class);
 
     private final SessionRegistry sessionRegistry;
-    private final GatewayChannelInitializer channelInitializer;
+    private final GatewayMessageHandler gatewayMessageHandler;
     private final MessageFactory messageFactory;
 
     private EventLoopGroup clientGroup;
 
     public ParticipantConnector(SessionRegistry sessionRegistry,
-                                @Lazy GatewayChannelInitializer channelInitializer,
+                                @Lazy GatewayMessageHandler gatewayMessageHandler,
                                 MessageFactory messageFactory) {
-        this.sessionRegistry   = sessionRegistry;
-        this.channelInitializer = channelInitializer;
-        this.messageFactory    = messageFactory;
+        this.sessionRegistry      = sessionRegistry;
+        this.gatewayMessageHandler = gatewayMessageHandler;
+        this.messageFactory       = messageFactory;
     }
 
     @PostConstruct
@@ -62,7 +71,6 @@ public class ParticipantConnector {
             return;
         }
 
-        // Establish new connection to issuer
         if (issuer.getHost() == null || issuer.getPort() == null) {
             throw new IllegalStateException("Issuer " + issuer.getCode() + " has no host/port configured");
         }
@@ -71,7 +79,16 @@ public class ParticipantConnector {
             Bootstrap bootstrap = new Bootstrap()
                     .group(clientGroup)
                     .channel(NioSocketChannel.class)
-                    .handler(channelInitializer);
+                    .handler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) {
+                            ch.pipeline()
+                                    .addLast(new IdleStateHandler(300, 0, 0, TimeUnit.SECONDS))
+                                    .addLast(new Iso8583FrameDecoder())
+                                    .addLast(new Iso8583Encoder())
+                                    .addLast(gatewayMessageHandler);
+                        }
+                    });
 
             ChannelFuture future = bootstrap.connect(issuer.getHost(), issuer.getPort()).sync();
             Channel ch = future.channel();
