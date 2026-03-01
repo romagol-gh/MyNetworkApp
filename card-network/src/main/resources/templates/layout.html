@@ -28,7 +28,7 @@
         </a>
         <ul class="nav flex-column gap-1">
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/}" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">
+                <a class="nav-link" th:href="@{/}" th:classappend="${currentUri == '/' ? 'active' : ''}">
                     Dashboard
                 </a>
             </li>
