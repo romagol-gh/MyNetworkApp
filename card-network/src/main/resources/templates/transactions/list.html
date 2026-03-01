@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Transactions', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>STAN</th><th>MTI</th><th>PAN (masked)</th>
+                    <th>Amount</th><th>CCY</th><th>Status</th>
+                    <th>RC</th><th>Fraud</th><th>Time</th><th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${transactions}">
+                    <td><code th:text="${t.stan}"></code></td>
+                    <td><code th:text="${t.messageType}"></code></td>
+                    <td><code th:text="${t.panMasked ?: '—'}"></code></td>
+                    <td th:text="${t.amount ?: '—'}"></td>
+                    <td th:text="${t.currency ?: '—'}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${t.status.name() == 'APPROVED' ? 'bg-success' :
+                                              t.status.name() == 'DECLINED' ? 'bg-danger' :
+                                              t.status.name() == 'REVERSED' ? 'bg-warning text-dark' :
+                                              t.status.name() == 'FLAGGED' ? 'bg-orange' : 'bg-secondary'}"
+                              th:text="${t.status}"></span>
+                    </td>
+                    <td th:text="${t.responseCode ?: '—'}"></td>
+                    <td>
+                        <span th:if="${t.fraudFlagged}" class="badge bg-danger">&#9888;</span>
+                    </td>
+                    <td th:text="${#temporals.format(t.transmittedAt, 'MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <a th:href="@{'/transactions/' + ${t.id}}"
+                           class="btn btn-sm btn-outline-secondary">View</a>
+                    </td>
+                </tr>
+                <tr th:if="${transactions.isEmpty()}">
+                    <td colspan="10" class="text-center text-muted py-4">No transactions yet.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav th:if="${transactions.totalPages > 1}" class="mt-3">
+        <ul class="pagination pagination-sm">
+            <li class="page-item" th:classappend="${transactions.first ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/transactions(page=${transactions.number - 1})}">Prev</a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link"
+                      th:text="${transactions.number + 1} + ' / ' + ${transactions.totalPages}"></span>
+            </li>
+            <li class="page-item" th:classappend="${transactions.last ? 'disabled' : ''}">
+                <a class="page-link" th:href="@{/transactions(page=${transactions.number + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

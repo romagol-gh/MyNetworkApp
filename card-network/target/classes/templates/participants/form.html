@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Participant', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="card" style="max-width:600px;">
+        <div class="card-body">
+            <form th:action="${participant.id != null ? '/participants/' + participant.id : '/participants'}"
+                  method="post">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" th:value="${participant.name}" required/>
+                </div>
+                <div class="mb-3" th:if="${participant.id == null}">
+                    <label class="form-label">Institution Code (DE32/DE33)</label>
+                    <input type="text" name="code" class="form-control" th:value="${participant.code}"
+                           maxlength="11" required/>
+                    <div class="form-text">Unique identifier used in ISO 8583 messages</div>
+                </div>
+                <div class="mb-3" th:if="${participant.id == null}">
+                    <label class="form-label">Type</label>
+                    <select name="type" class="form-select" required>
+                        <option th:each="t : ${types}" th:value="${t}" th:text="${t}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Host (for issuers)</label>
+                    <input type="text" name="host" class="form-control" th:value="${participant.host}"
+                           placeholder="e.g. issuer-bank.example.com"/>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Port (for issuers)</label>
+                    <input type="number" name="port" class="form-control" th:value="${participant.port}"
+                           placeholder="e.g. 8583" min="1" max="65535"/>
+                </div>
+                <div class="mb-3" th:if="${participant.id != null}">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
+                                th:selected="${s == participant.status}"></option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a th:href="@{/participants}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Transaction Detail', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <a th:href="@{/transactions}" class="btn btn-sm btn-outline-secondary mb-3">&larr; Back</a>
+
+    <div class="card" style="max-width:700px;">
+        <div class="card-body">
+            <h6 class="card-subtitle text-muted mb-3">ISO 8583 Transaction</h6>
+            <table class="table table-sm">
+                <tr><th width="200">ID</th><td th:text="${transaction.id}"></td></tr>
+                <tr><th>MTI</th><td><code th:text="${transaction.messageType}"></code></td></tr>
+                <tr><th>STAN (DE11)</th><td><code th:text="${transaction.stan}"></code></td></tr>
+                <tr><th>Retrieval Ref (DE37)</th><td><code th:text="${transaction.retrievalRef ?: '—'}"></code></td></tr>
+                <tr><th>Auth ID (DE38)</th><td><code th:text="${transaction.authId ?: '—'}"></code></td></tr>
+                <tr><th>Processing Code (DE3)</th><td><code th:text="${transaction.processingCode ?: '—'}"></code></td></tr>
+                <tr><th>PAN (DE2, masked)</th><td><code th:text="${transaction.panMasked ?: '—'}"></code></td></tr>
+                <tr><th>Amount (DE4)</th><td th:text="${transaction.amount ?: '—'}"></td></tr>
+                <tr><th>Currency (DE49)</th><td th:text="${transaction.currency ?: '—'}"></td></tr>
+                <tr><th>Response Code (DE39)</th><td><code th:text="${transaction.responseCode ?: '—'}"></code></td></tr>
+                <tr><th>Status</th>
+                    <td><span class="badge"
+                              th:classappend="${transaction.status.name() == 'APPROVED' ? 'bg-success' : 'bg-danger'}"
+                              th:text="${transaction.status}"></span></td>
+                </tr>
+                <tr><th>Acquirer</th><td th:text="${transaction.acquirer?.name ?: '—'}"></td></tr>
+                <tr><th>Issuer</th><td th:text="${transaction.issuer?.name ?: '—'}"></td></tr>
+                <tr><th>Fraud Flagged</th>
+                    <td>
+                        <span th:if="${transaction.fraudFlagged}" class="badge bg-danger">Yes</span>
+                        <span th:unless="${transaction.fraudFlagged}" class="text-muted">No</span>
+                    </td>
+                </tr>
+                <tr><th>Transmitted At</th><td th:text="${#temporals.format(transaction.transmittedAt, 'yyyy-MM-dd HH:mm:ss')}"></td></tr>
+                <tr><th>Responded At</th><td th:text="${transaction.respondedAt != null ? #temporals.format(transaction.respondedAt, 'yyyy-MM-dd HH:mm:ss') : '—'}"></td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+/Users/romagol/AppDev/MyNetworkApp/card-network/src/test/java/com/network/clearing/ClearingEngineTest.java
+/Users/romagol/AppDev/MyNetworkApp/card-network/src/test/java/com/network/fraud/FraudDetectionServiceTest.java
+/Users/romagol/AppDev/MyNetworkApp/card-network/src/test/java/com/network/gateway/GatewayIntegrationTest.java
+/Users/romagol/AppDev/MyNetworkApp/card-network/src/test/java/com/network/iso8583/MessageFactoryTest.java
+/Users/romagol/AppDev/MyNetworkApp/card-network/src/test/java/com/network/routing/BinRouterTest.java

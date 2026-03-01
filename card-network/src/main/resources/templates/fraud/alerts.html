@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Fraud Alerts', ~{::content})}">
+<body>
+<div th:fragment="content">
+    <div class="d-flex gap-2 mb-3">
+        <a th:href="@{/fraud/alerts}" class="btn btn-sm btn-outline-secondary">All</a>
+        <a th:href="@{/fraud/alerts(reviewed=false)}" class="btn btn-sm btn-danger">
+            Pending (<span th:text="${pendingCount}">0</span>)
+        </a>
+        <a th:href="@{/fraud/alerts(reviewed=true)}" class="btn btn-sm btn-outline-success">Reviewed</a>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Created</th><th>Score</th><th>Action</th>
+                    <th>Triggered Rules</th><th>Reviewed</th><th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a : ${alerts}">
+                    <td th:text="${#temporals.format(a.createdAt, 'MM-dd HH:mm')}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${a.fraudScore >= 80 ? 'bg-danger' : a.fraudScore >= 50 ? 'bg-warning text-dark' : 'bg-secondary'}"
+                              th:text="${a.fraudScore}"></span>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${a.actionTaken == 'DECLINE' ? 'bg-danger' : 'bg-warning text-dark'}"
+                              th:text="${a.actionTaken}"></span>
+                    </td>
+                    <td class="small text-muted" th:text="${a.triggeredRules}"></td>
+                    <td>
+                        <span th:if="${a.reviewed}" class="text-success small">
+                            &#10003; <span th:text="${a.reviewedBy}"></span>
+                        </span>
+                        <span th:unless="${a.reviewed}" class="text-danger small">Pending</span>
+                    </td>
+                    <td>
+                        <a th:unless="${a.reviewed}"
+                           th:href="@{'/api/fraud/alerts/' + ${a.id} + '/review'}"
+                           class="btn btn-sm btn-outline-success">Mark Reviewed</a>
+                        <a th:href="@{'/transactions/' + ${a.transaction.id}}"
+                           class="btn btn-sm btn-outline-secondary">Transaction</a>
+                    </td>
+                </tr>
+                <tr th:if="${alerts.isEmpty()}">
+                    <td colspan="6" class="text-center text-muted py-4">No alerts.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

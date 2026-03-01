@@ -1,0 +1,5 @@
+com/network/gateway/GatewayIntegrationTest.class
+com/network/routing/BinRouterTest.class
+com/network/fraud/FraudDetectionServiceTest.class
+com/network/iso8583/MessageFactoryTest.class
+com/network/clearing/ClearingEngineTest.class

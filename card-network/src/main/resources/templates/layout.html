@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' — Card Network'">Card Network</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <style>
+        body { background: #f8f9fa; }
+        .sidebar { min-height: 100vh; background: #212529; }
+        .sidebar .nav-link { color: #adb5bd; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; }
+        .sidebar .nav-link .bi { margin-right: 8px; }
+        .stat-card { border-left: 4px solid; }
+        .stat-card.primary { border-color: #0d6efd; }
+        .stat-card.success { border-color: #198754; }
+        .stat-card.warning { border-color: #ffc107; }
+        .stat-card.danger  { border-color: #dc3545; }
+    </style>
+</head>
+<body>
+<div th:fragment="layout(title, content)" class="d-flex">
+    <!-- Sidebar -->
+    <nav class="sidebar d-flex flex-column p-3" style="width:230px; min-width:230px;">
+        <a class="navbar-brand text-white fw-bold mb-4 d-block" th:href="@{/}">
+            &#9632; Card Network
+        </a>
+        <ul class="nav flex-column gap-1">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}" th:classappend="${#httpServletRequest.requestURI == '/' ? 'active' : ''}">
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/participants}">Participants</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/bin-ranges}">BIN Ranges</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/transactions}">Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/clearing}">Clearing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/settlement}">Settlement</a>
+            </li>
+            <li class="nav-item mt-2 text-uppercase text-muted small px-2">Fraud</li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/fraud/rules}">Rules</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/fraud/alerts}">Alerts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/fraud/blacklist}">Blacklist</a>
+            </li>
+        </ul>
+        <div class="mt-auto">
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-sm btn-outline-secondary w-100 text-white" type="submit">Sign out</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-grow-1 p-4">
+        <h4 class="mb-4" th:text="${title}"></h4>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${warning}" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <span th:text="${warning}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:replace="${content}"></div>
+    </div>
+</div>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
