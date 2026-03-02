@@ -37,6 +37,10 @@ public class BinRangeController {
                 .filter(p -> p.getType() == Participant.Type.ISSUER)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Issuer not found"));
 
+        if (binRangeRepository.existsByLowAndHigh(req.low(), req.high())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "BIN range already exists");
+        }
+
         BinRange range = new BinRange();
         range.setLow(req.low());
         range.setHigh(req.high());

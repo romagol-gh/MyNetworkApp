@@ -14,4 +14,6 @@ public interface BinRangeRepository extends JpaRepository<BinRange, UUID> {
     Optional<BinRange> findByPan(@Param("pan") String pan);
 
     List<BinRange> findByIssuerId(UUID issuerId);
+
+    boolean existsByLowAndHigh(String low, String high);
 }

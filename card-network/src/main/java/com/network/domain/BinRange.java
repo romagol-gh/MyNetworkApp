@@ -18,7 +18,7 @@ public class BinRange {
     @Column(nullable = false, length = 19)
     private String high; // e.g. "499999"
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "issuer_id", nullable = false)
     private Participant issuer;
 
