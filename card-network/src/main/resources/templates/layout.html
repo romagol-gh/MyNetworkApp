@@ -47,6 +47,10 @@
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/settlement}">Settlement</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/fees}"
+                   th:classappend="${currentUri != null and currentUri.startsWith('/fees') ? 'active' : ''}">Fees</a>
+            </li>
             <li class="nav-item mt-2 text-uppercase text-muted small px-2">Fraud</li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/fraud/rules}">Rules</a>
@@ -56,6 +60,11 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/fraud/blacklist}">Blacklist</a>
+            </li>
+            <li class="nav-item mt-2 text-uppercase text-muted small px-2">Testing</li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/test-lab}"
+                   th:classappend="${currentUri != null and currentUri.startsWith('/test-lab') ? 'active' : ''}">Test Lab</a>
             </li>
         </ul>
         <div class="mt-auto">

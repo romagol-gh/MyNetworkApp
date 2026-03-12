@@ -9,7 +9,9 @@
                 <thead class="table-light">
                 <tr>
                     <th>Date</th><th>Participant</th><th>Type</th>
-                    <th>Debit Total</th><th>Credit Total</th><th>Net Position</th>
+                    <th>Debit Total</th><th>Credit Total</th>
+                    <th>Interchange Paid</th><th>Interchange Rcvd</th><th>Network Fees</th>
+                    <th>Net Position</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -21,15 +23,21 @@
                               th:classappend="${r.participant.type.name() == 'ACQUIRER' ? 'bg-primary' : 'bg-success'}"
                               th:text="${r.participant.type}"></span>
                     </td>
-                    <td th:text="${r.debitTotal}"></td>
-                    <td th:text="${r.creditTotal}"></td>
+                    <td th:text="'$' + #numbers.formatDecimal(r.debitTotal / 100.0, 1, 2)"></td>
+                    <td th:text="'$' + #numbers.formatDecimal(r.creditTotal / 100.0, 1, 2)"></td>
+                    <td class="text-danger"
+                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesPaid / 100.0, 1, 2)"></td>
+                    <td class="text-success"
+                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesReceived / 100.0, 1, 2)"></td>
+                    <td class="text-danger"
+                        th:text="'$' + #numbers.formatDecimal(r.networkFeesPaid / 100.0, 1, 2)"></td>
                     <td>
                         <span th:classappend="${r.netPosition >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}"
-                              th:text="${r.netPosition}"></span>
+                              th:text="'$' + #numbers.formatDecimal(r.netPosition / 100.0, 1, 2)"></span>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(records)}">
-                    <td colspan="6" class="text-center text-muted py-4">No settlement records yet.</td>
+                    <td colspan="9" class="text-center text-muted py-4">No settlement records yet.</td>
                 </tr>
                 </tbody>
             </table>

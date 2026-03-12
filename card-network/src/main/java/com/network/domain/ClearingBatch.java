@@ -24,6 +24,7 @@ public class ClearingBatch {
 
     private Integer recordCount;
     private Long totalAmount;
+    private Long totalFees = 0L;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -39,6 +40,8 @@ public class ClearingBatch {
     public void setRecordCount(Integer recordCount) { this.recordCount = recordCount; }
     public Long getTotalAmount() { return totalAmount; }
     public void setTotalAmount(Long totalAmount) { this.totalAmount = totalAmount; }
+    public Long getTotalFees() { return totalFees; }
+    public void setTotalFees(Long totalFees) { this.totalFees = totalFees; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getCompletedAt() { return completedAt; }
     public void setCompletedAt(Instant completedAt) { this.completedAt = completedAt; }

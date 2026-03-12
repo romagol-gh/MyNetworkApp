@@ -9,7 +9,7 @@
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
-                        <tr><th>Date</th><th>Status</th><th>Records</th><th>Total Amount</th><th>Completed</th></tr>
+                        <tr><th>Date</th><th>Status</th><th>Records</th><th>Total Amount</th><th>Total Fees</th><th>Completed</th></tr>
                         </thead>
                         <tbody>
                         <tr th:each="b : ${batches}">
@@ -21,11 +21,12 @@
                                       th:text="${b.status}"></span>
                             </td>
                             <td th:text="${b.recordCount ?: 0}"></td>
-                            <td th:text="${b.totalAmount ?: 0}"></td>
+                            <td th:text="'$' + #numbers.formatDecimal((b.totalAmount ?: 0) / 100.0, 1, 2)"></td>
+                            <td th:text="'$' + #numbers.formatDecimal((b.totalFees ?: 0) / 100.0, 1, 2)"></td>
                             <td th:text="${b.completedAt != null ? #temporals.format(b.completedAt, 'HH:mm:ss') : '—'}"></td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(batches)}">
-                            <td colspan="5" class="text-center text-muted py-4">No clearing batches yet.</td>
+                            <td colspan="6" class="text-center text-muted py-4">No clearing batches yet.</td>
                         </tr>
                         </tbody>
                     </table>

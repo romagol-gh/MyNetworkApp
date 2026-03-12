@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Fees', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <!-- Fee Schedule -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Fee Schedule</strong>
+            <span class="badge bg-secondary" th:text="${rates.size()} + ' rates'">0 rates</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>MCC Pattern</th>
+                    <th>Rate (bps)</th>
+                    <th>Flat (minor)</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${rates}">
+                    <td>
+                        <strong th:text="${r.name}"></strong>
+                        <div class="text-muted small" th:text="${r.description}"></div>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${r.feeCategory == 'INTERCHANGE' ? 'bg-primary' : 'bg-warning text-dark'}"
+                              th:text="${r.feeCategory}"></span>
+                    </td>
+                    <td><code th:text="${r.mccPattern}"></code></td>
+                    <td th:text="${r.percentageBps} + ' bps (' + #numbers.formatDecimal(r.percentageBps / 100.0, 1, 2) + '%)'"></td>
+                    <td th:text="'$' + #numbers.formatDecimal(r.flatAmountMinor / 100.0, 1, 2)"></td>
+                    <td th:text="${r.priority}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${r.enabled ? 'bg-success' : 'bg-secondary'}"
+                              th:text="${r.enabled ? 'Active' : 'Disabled'}"></span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(rates)}">
+                    <td colspan="7" class="text-center text-muted py-4">No rates configured.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Fee Report -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <strong>Fee Report</strong>
+            <div class="d-flex align-items-center gap-2">
+                <form method="get" action="/fees" class="d-flex align-items-center gap-2 mb-0">
+                    <select name="date" class="form-select form-select-sm" style="width:auto;"
+                            onchange="this.form.submit()">
+                        <option th:each="d : ${allDates}"
+                                th:value="${d}"
+                                th:text="${d}"
+                                th:selected="${d == selectedDate}"></option>
+                        <option th:if="${#lists.isEmpty(allDates)}" disabled selected>No settlement data</option>
+                    </select>
+                </form>
+                <a th:href="@{/api/interchange/report(date=${selectedDate},format=csv)}"
+                   class="btn btn-sm btn-outline-secondary">&#8595; CSV</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Participant</th>
+                    <th>Type</th>
+                    <th>Interchange Paid</th>
+                    <th>Interchange Rcvd</th>
+                    <th>Network Fees</th>
+                    <th>Net Fee Impact</th>
+                    <th>Net Position</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="r : ${records}"
+                    th:with="netFee=${r.interchangeFeesReceived - r.interchangeFeesPaid - r.networkFeesPaid}">
+                    <td th:text="${r.participant.name}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${r.participant.type.name() == 'ACQUIRER' ? 'bg-primary' : 'bg-success'}"
+                              th:text="${r.participant.type}"></span>
+                    </td>
+                    <td class="text-danger"
+                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesPaid / 100.0, 1, 2)"></td>
+                    <td class="text-success"
+                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesReceived / 100.0, 1, 2)"></td>
+                    <td class="text-danger"
+                        th:text="'$' + #numbers.formatDecimal(r.networkFeesPaid / 100.0, 1, 2)"></td>
+                    <td>
+                        <span th:classappend="${netFee >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}"
+                              th:text="(${netFee >= 0 ? '+' : ''}) + '$' + #numbers.formatDecimal(netFee / 100.0, 1, 2)"></span>
+                    </td>
+                    <td>
+                        <span th:classappend="${r.netPosition >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}"
+                              th:text="'$' + #numbers.formatDecimal(r.netPosition / 100.0, 1, 2)"></span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(records)}">
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No settlement records for
+                        <span th:text="${selectedDate}"></span>.
+                        Run clearing &amp; settlement first.
+                    </td>
+                </tr>
+                </tbody>
+                <!-- Totals row -->
+                <tfoot th:if="${not #lists.isEmpty(records)}"
+                       th:with="totalIPaid=${#aggregates.sum(records.![interchangeFeesPaid])},
+                                totalIRcvd=${#aggregates.sum(records.![interchangeFeesReceived])},
+                                totalNFees=${#aggregates.sum(records.![networkFeesPaid])},
+                                totalNet=${#aggregates.sum(records.![netPosition])}">
+                <tr class="table-light fw-bold">
+                    <td colspan="2">Totals</td>
+                    <td class="text-danger"
+                        th:text="'$' + #numbers.formatDecimal(totalIPaid / 100.0, 1, 2)"></td>
+                    <td class="text-success"
+                        th:text="'$' + #numbers.formatDecimal(totalIRcvd / 100.0, 1, 2)"></td>
+                    <td class="text-danger"
+                        th:text="'$' + #numbers.formatDecimal(totalNFees / 100.0, 1, 2)"></td>
+                    <td>—</td>
+                    <td th:classappend="${totalNet >= 0 ? 'text-success' : 'text-danger'}"
+                        th:text="'$' + #numbers.formatDecimal(totalNet / 100.0, 1, 2)"></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

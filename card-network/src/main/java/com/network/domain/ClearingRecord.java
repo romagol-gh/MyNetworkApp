@@ -33,6 +33,12 @@ public class ClearingRecord {
     @Column(nullable = false, length = 3)
     private String currency;
 
+    @Column(nullable = false)
+    private long interchangeFee = 0;
+
+    @Column(nullable = false)
+    private long networkFee = 0;
+
     public UUID getId() { return id; }
     public ClearingBatch getBatch() { return batch; }
     public void setBatch(ClearingBatch batch) { this.batch = batch; }
@@ -46,4 +52,8 @@ public class ClearingRecord {
     public void setAmount(Long amount) { this.amount = amount; }
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
+    public long getInterchangeFee() { return interchangeFee; }
+    public void setInterchangeFee(long interchangeFee) { this.interchangeFee = interchangeFee; }
+    public long getNetworkFee() { return networkFee; }
+    public void setNetworkFee(long networkFee) { this.networkFee = networkFee; }
 }

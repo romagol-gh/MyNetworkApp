@@ -5,6 +5,7 @@ import com.network.domain.Transaction;
 import com.network.repository.ClearingBatchRepository;
 import com.network.repository.ClearingRecordRepository;
 import com.network.repository.TransactionRepository;
+import com.network.settlement.InterchangeService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -21,8 +22,9 @@ class ClearingEngineTest {
     private final TransactionRepository   txnRepo    = Mockito.mock(TransactionRepository.class);
     private final ClearingBatchRepository batchRepo  = Mockito.mock(ClearingBatchRepository.class);
     private final ClearingRecordRepository recRepo   = Mockito.mock(ClearingRecordRepository.class);
+    private final InterchangeService      feeService = Mockito.mock(InterchangeService.class);
 
-    private final ClearingEngine engine = new ClearingEngine(txnRepo, batchRepo, recRepo);
+    private final ClearingEngine engine = new ClearingEngine(txnRepo, batchRepo, recRepo, feeService);
 
     @Test
     void runClearing_createsCompleteeBatch_forApprovedTransactions() {

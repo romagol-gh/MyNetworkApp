@@ -59,14 +59,18 @@ public class SettlementController {
         response.setHeader("Content-Disposition", "attachment; filename=settlement-" + date + ".csv");
 
         PrintWriter writer = response.getWriter();
-        writer.println("participant_id,participant_name,settlement_date,debit_total,credit_total,net_position");
+        writer.println("participant_id,participant_name,settlement_date,debit_total,credit_total," +
+                "interchange_fees_paid,interchange_fees_received,network_fees_paid,net_position");
         for (SettlementRecord r : records) {
-            writer.printf("%s,%s,%s,%d,%d,%d%n",
+            writer.printf("%s,%s,%s,%d,%d,%d,%d,%d,%d%n",
                     r.getParticipant().getId(),
                     r.getParticipant().getName(),
                     r.getSettlementDate(),
                     r.getDebitTotal(),
                     r.getCreditTotal(),
+                    r.getInterchangeFeesPaid(),
+                    r.getInterchangeFeesReceived(),
+                    r.getNetworkFeesPaid(),
                     r.getNetPosition());
         }
     }

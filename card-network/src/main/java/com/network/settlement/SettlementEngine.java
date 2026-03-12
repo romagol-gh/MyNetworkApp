@@ -43,7 +43,7 @@ public class SettlementEngine {
         List<ClearingRecord> records = clearingRecordRepository.findByBatchId(batch.getId());
         LocalDate settlementDate = batch.getBatchDate();
 
-        // participant UUID → {debit, credit}
+        // participant UUID → {debit, credit, interchangePaid, interchangeReceived, networkFees}
         Map<UUID, long[]> positions = new HashMap<>();
         Map<UUID, Participant> participantMap = new HashMap<>();
 
@@ -51,27 +51,42 @@ public class SettlementEngine {
             Participant acquirer = record.getAcquirer();
             Participant issuer   = record.getIssuer();
             long amount          = record.getAmount();
+            long iFee            = record.getInterchangeFee();
+            long nFee            = record.getNetworkFee();
 
-            // Acquirer debits (they owe the network for payments made)
-            positions.computeIfAbsent(acquirer.getId(), k -> new long[2])[0] += amount;
+            // Acquirer: debits transaction amount, pays interchange + network fees
+            long[] acqPos = positions.computeIfAbsent(acquirer.getId(), k -> new long[5]);
+            acqPos[0] += amount;   // debit
+            acqPos[2] += iFee;     // interchangePaid
+            acqPos[4] += nFee;     // networkFees
             participantMap.put(acquirer.getId(), acquirer);
 
-            // Issuer credits (they receive payment from the network)
-            positions.computeIfAbsent(issuer.getId(), k -> new long[2])[1] += amount;
+            // Issuer: credits transaction amount, receives interchange, pays network fee
+            long[] issPos = positions.computeIfAbsent(issuer.getId(), k -> new long[5]);
+            issPos[1] += amount;   // credit
+            issPos[3] += iFee;     // interchangeReceived
+            issPos[4] += nFee;     // networkFees
             participantMap.put(issuer.getId(), issuer);
         }
 
         List<SettlementRecord> settlementRecords = positions.entrySet().stream().map(entry -> {
             UUID participantId = entry.getKey();
-            long debit  = entry.getValue()[0];
-            long credit = entry.getValue()[1];
+            long[] pos = entry.getValue();
+            long debit               = pos[0];
+            long credit              = pos[1];
+            long interchangePaid     = pos[2];
+            long interchangeReceived = pos[3];
+            long networkFees         = pos[4];
 
             SettlementRecord sr = new SettlementRecord();
             sr.setSettlementDate(settlementDate);
             sr.setParticipant(participantMap.get(participantId));
             sr.setDebitTotal(debit);
             sr.setCreditTotal(credit);
-            sr.setNetPosition(credit - debit); // positive = owed TO participant
+            sr.setInterchangeFeesPaid(interchangePaid);
+            sr.setInterchangeFeesReceived(interchangeReceived);
+            sr.setNetworkFeesPaid(networkFees);
+            sr.setNetPosition(credit - debit + interchangeReceived - interchangePaid - networkFees);
             sr.setBatch(batch);
             return settlementRecordRepository.save(sr);
         }).toList();

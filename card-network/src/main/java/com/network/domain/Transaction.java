@@ -68,6 +68,9 @@ public class Transaction {
     @JoinColumn(name = "clearing_batch_id")
     private ClearingBatch clearingBatch;
 
+    @Column(length = 4)
+    private String mcc; // DE18
+
     public UUID getId() { return id; }
     public String getStan() { return stan; }
     public void setStan(String stan) { this.stan = stan; }
@@ -102,4 +105,6 @@ public class Transaction {
     public void setRespondedAt(Instant respondedAt) { this.respondedAt = respondedAt; }
     public ClearingBatch getClearingBatch() { return clearingBatch; }
     public void setClearingBatch(ClearingBatch clearingBatch) { this.clearingBatch = clearingBatch; }
+    public String getMcc() { return mcc; }
+    public void setMcc(String mcc) { this.mcc = mcc; }
 }

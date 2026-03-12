@@ -29,6 +29,15 @@ public class SettlementRecord {
     @Column(nullable = false)
     private Long creditTotal = 0L;
 
+    @Column(nullable = false)
+    private Long interchangeFeesPaid = 0L;
+
+    @Column(nullable = false)
+    private Long interchangeFeesReceived = 0L;
+
+    @Column(nullable = false)
+    private Long networkFeesPaid = 0L;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "batch_id")
     private ClearingBatch batch;
@@ -50,4 +59,10 @@ public class SettlementRecord {
     public ClearingBatch getBatch() { return batch; }
     public void setBatch(ClearingBatch batch) { this.batch = batch; }
     public Instant getCreatedAt() { return createdAt; }
+    public Long getInterchangeFeesPaid() { return interchangeFeesPaid; }
+    public void setInterchangeFeesPaid(Long interchangeFeesPaid) { this.interchangeFeesPaid = interchangeFeesPaid; }
+    public Long getInterchangeFeesReceived() { return interchangeFeesReceived; }
+    public void setInterchangeFeesReceived(Long interchangeFeesReceived) { this.interchangeFeesReceived = interchangeFeesReceived; }
+    public Long getNetworkFeesPaid() { return networkFeesPaid; }
+    public void setNetworkFeesPaid(Long networkFeesPaid) { this.networkFeesPaid = networkFeesPaid; }
 }

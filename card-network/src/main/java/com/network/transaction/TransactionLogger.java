@@ -34,6 +34,7 @@ public class TransactionLogger {
         txn.setCurrency(msg.getCurrency());
         txn.setAcquirer(acquirer);
         txn.setIssuer(issuer);
+        txn.setMcc(msg.get(Field.MCC));
         txn.setStatus(Transaction.Status.PENDING);
         return transactionRepository.save(txn);
     }
