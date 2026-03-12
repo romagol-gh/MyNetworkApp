@@ -23,17 +23,17 @@
                               th:classappend="${r.participant.type.name() == 'ACQUIRER' ? 'bg-primary' : 'bg-success'}"
                               th:text="${r.participant.type}"></span>
                     </td>
-                    <td th:text="'$' + #numbers.formatDecimal(r.debitTotal / 100.0, 1, 2)"></td>
-                    <td th:text="'$' + #numbers.formatDecimal(r.creditTotal / 100.0, 1, 2)"></td>
+                    <td th:text="|$${#numbers.formatDecimal(r.debitTotal / 100.0, 1, 2)}|"></td>
+                    <td th:text="|$${#numbers.formatDecimal(r.creditTotal / 100.0, 1, 2)}|"></td>
                     <td class="text-danger"
-                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesPaid / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(r.interchangeFeesPaid / 100.0, 1, 2)}|"></td>
                     <td class="text-success"
-                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesReceived / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(r.interchangeFeesReceived / 100.0, 1, 2)}|"></td>
                     <td class="text-danger"
-                        th:text="'$' + #numbers.formatDecimal(r.networkFeesPaid / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(r.networkFeesPaid / 100.0, 1, 2)}|"></td>
                     <td>
                         <span th:classappend="${r.netPosition >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}"
-                              th:text="'$' + #numbers.formatDecimal(r.netPosition / 100.0, 1, 2)"></span>
+                              th:text="|$${#numbers.formatDecimal(r.netPosition / 100.0, 1, 2)}|"></span>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(records)}">

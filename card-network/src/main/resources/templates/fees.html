@@ -35,8 +35,8 @@
                               th:text="${r.feeCategory}"></span>
                     </td>
                     <td><code th:text="${r.mccPattern}"></code></td>
-                    <td th:text="${r.percentageBps} + ' bps (' + #numbers.formatDecimal(r.percentageBps / 100.0, 1, 2) + '%)'"></td>
-                    <td th:text="'$' + #numbers.formatDecimal(r.flatAmountMinor / 100.0, 1, 2)"></td>
+                    <td th:text="${r.percentageBps + ' bps (' + #numbers.formatDecimal(r.percentageBps / 100.0, 1, 2) + '%)'}" ></td>
+                    <td th:text="|$${#numbers.formatDecimal(r.flatAmountMinor / 100.0, 1, 2)}|"></td>
                     <td th:text="${r.priority}"></td>
                     <td>
                         <span class="badge"
@@ -94,18 +94,18 @@
                               th:text="${r.participant.type}"></span>
                     </td>
                     <td class="text-danger"
-                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesPaid / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(r.interchangeFeesPaid / 100.0, 1, 2)}|"></td>
                     <td class="text-success"
-                        th:text="'$' + #numbers.formatDecimal(r.interchangeFeesReceived / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(r.interchangeFeesReceived / 100.0, 1, 2)}|"></td>
                     <td class="text-danger"
-                        th:text="'$' + #numbers.formatDecimal(r.networkFeesPaid / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(r.networkFeesPaid / 100.0, 1, 2)}|"></td>
                     <td>
                         <span th:classappend="${netFee >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}"
-                              th:text="(${netFee >= 0 ? '+' : ''}) + '$' + #numbers.formatDecimal(netFee / 100.0, 1, 2)"></span>
+                              th:text="${(netFee >= 0 ? '+' : '') + '$' + #numbers.formatDecimal(netFee / 100.0, 1, 2)}"></span>
                     </td>
                     <td>
                         <span th:classappend="${r.netPosition >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold'}"
-                              th:text="'$' + #numbers.formatDecimal(r.netPosition / 100.0, 1, 2)"></span>
+                              th:text="|$${#numbers.formatDecimal(r.netPosition / 100.0, 1, 2)}|"></span>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(records)}">
@@ -125,14 +125,14 @@
                 <tr class="table-light fw-bold">
                     <td colspan="2">Totals</td>
                     <td class="text-danger"
-                        th:text="'$' + #numbers.formatDecimal(totalIPaid / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(totalIPaid / 100.0, 1, 2)}|"></td>
                     <td class="text-success"
-                        th:text="'$' + #numbers.formatDecimal(totalIRcvd / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(totalIRcvd / 100.0, 1, 2)}|"></td>
                     <td class="text-danger"
-                        th:text="'$' + #numbers.formatDecimal(totalNFees / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(totalNFees / 100.0, 1, 2)}|"></td>
                     <td>—</td>
                     <td th:classappend="${totalNet >= 0 ? 'text-success' : 'text-danger'}"
-                        th:text="'$' + #numbers.formatDecimal(totalNet / 100.0, 1, 2)"></td>
+                        th:text="|$${#numbers.formatDecimal(totalNet / 100.0, 1, 2)}|"></td>
                 </tr>
                 </tfoot>
             </table>

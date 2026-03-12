@@ -21,8 +21,8 @@
                                       th:text="${b.status}"></span>
                             </td>
                             <td th:text="${b.recordCount ?: 0}"></td>
-                            <td th:text="'$' + #numbers.formatDecimal((b.totalAmount ?: 0) / 100.0, 1, 2)"></td>
-                            <td th:text="'$' + #numbers.formatDecimal((b.totalFees ?: 0) / 100.0, 1, 2)"></td>
+                            <td th:text="|$${#numbers.formatDecimal((b.totalAmount ?: 0) / 100.0, 1, 2)}|"></td>
+                            <td th:text="|$${#numbers.formatDecimal((b.totalFees ?: 0) / 100.0, 1, 2)}|"></td>
                             <td th:text="${b.completedAt != null ? #temporals.format(b.completedAt, 'HH:mm:ss') : '—'}"></td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(batches)}">
