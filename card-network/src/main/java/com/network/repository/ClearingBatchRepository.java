@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface ClearingBatchRepository extends JpaRepository<ClearingBatch, UUID> {
     Optional<ClearingBatch> findByBatchDate(LocalDate batchDate);
     boolean existsByBatchDate(LocalDate batchDate);
+    Optional<ClearingBatch> findTopByStatusOrderByBatchDateDesc(ClearingBatch.Status status);
 }

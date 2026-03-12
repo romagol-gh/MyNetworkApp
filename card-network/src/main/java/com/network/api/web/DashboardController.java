@@ -1,7 +1,10 @@
 package com.network.api.web;
 
+import com.network.domain.ClearingBatch;
 import com.network.gateway.SessionRegistry;
+import com.network.repository.ClearingBatchRepository;
 import com.network.repository.FraudAlertRepository;
+import com.network.repository.InterchangeRateRepository;
 import com.network.repository.TransactionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,16 +18,22 @@ import java.time.temporal.ChronoUnit;
 @RequestMapping("/")
 public class DashboardController {
 
-    private final TransactionRepository transactionRepository;
-    private final FraudAlertRepository  fraudAlertRepository;
-    private final SessionRegistry       sessionRegistry;
+    private final TransactionRepository  transactionRepository;
+    private final FraudAlertRepository   fraudAlertRepository;
+    private final SessionRegistry        sessionRegistry;
+    private final InterchangeRateRepository rateRepository;
+    private final ClearingBatchRepository   batchRepository;
 
     public DashboardController(TransactionRepository transactionRepository,
                                FraudAlertRepository fraudAlertRepository,
-                               SessionRegistry sessionRegistry) {
+                               SessionRegistry sessionRegistry,
+                               InterchangeRateRepository rateRepository,
+                               ClearingBatchRepository batchRepository) {
         this.transactionRepository = transactionRepository;
         this.fraudAlertRepository  = fraudAlertRepository;
         this.sessionRegistry       = sessionRegistry;
+        this.rateRepository        = rateRepository;
+        this.batchRepository       = batchRepository;
     }
 
     @GetMapping
@@ -40,12 +49,20 @@ public class DashboardController {
 
         double approvalRate = total > 0 ? (double) approved / total * 100 : 0;
 
+        long activeRates = rateRepository.findByEnabledTrueOrderByPriorityDesc().size();
+        long latestBatchFees = batchRepository
+                .findTopByStatusOrderByBatchDateDesc(ClearingBatch.Status.COMPLETE)
+                .map(b -> b.getTotalFees() != null ? b.getTotalFees() : 0L)
+                .orElse(0L);
+
         model.addAttribute("totalTransactions", total);
         model.addAttribute("approvedTransactions", approved);
         model.addAttribute("approvalRate", String.format("%.1f", approvalRate));
-        model.addAttribute("totalVolume", volume);
+        model.addAttribute("totalVolume", String.format("$%,.2f", volume / 100.0));
         model.addAttribute("pendingFraudAlerts", pending);
         model.addAttribute("activeSessions", sessions);
+        model.addAttribute("activeRates", activeRates);
+        model.addAttribute("latestBatchFees", String.format("$%,.2f", latestBatchFees / 100.0));
 
         return "dashboard";
     }

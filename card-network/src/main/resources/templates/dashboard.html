@@ -4,7 +4,7 @@
 <body>
 <div th:fragment="content">
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card stat-card primary">
                 <div class="card-body">
                     <div class="text-muted small">Today's Transactions</div>
@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card stat-card success">
                 <div class="card-body">
                     <div class="text-muted small">Approval Rate</div>
@@ -20,19 +20,37 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card stat-card warning">
                 <div class="card-body">
-                    <div class="text-muted small">Volume (minor units)</div>
-                    <div class="fs-3 fw-bold" th:text="${totalVolume}">0</div>
+                    <div class="text-muted small">Today's Volume</div>
+                    <div class="fs-3 fw-bold" th:text="${totalVolume}">$0.00</div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card stat-card danger">
                 <div class="card-body">
                     <div class="text-muted small">Pending Fraud Alerts</div>
                     <div class="fs-3 fw-bold" th:text="${pendingFraudAlerts}">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card" style="border-left: 4px solid #6f42c1;">
+                <div class="card-body">
+                    <div class="text-muted small">Active Fee Rules</div>
+                    <div class="fs-3 fw-bold" th:text="${activeRates}">0</div>
+                    <div class="text-muted" style="font-size:0.7rem;">interchange + network</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card" style="border-left: 4px solid #0dcaf0;">
+                <div class="card-body">
+                    <div class="text-muted small">Latest Batch Fees</div>
+                    <div class="fs-3 fw-bold" th:text="${latestBatchFees}">$0.00</div>
+                    <div class="text-muted" style="font-size:0.7rem;">most recent clearing</div>
                 </div>
             </div>
         </div>
@@ -56,6 +74,7 @@
                         <a th:href="@{/transactions}" class="btn btn-sm btn-outline-primary">Transactions</a>
                         <a th:href="@{/fraud/alerts}" class="btn btn-sm btn-outline-danger">Fraud Alerts</a>
                         <a th:href="@{/clearing}" class="btn btn-sm btn-outline-secondary">Run Clearing</a>
+                        <a th:href="@{/fees}" class="btn btn-sm btn-outline-dark" style="border-color:#6f42c1;color:#6f42c1;">Fee Report</a>
                         <a th:href="@{/participants}" class="btn btn-sm btn-outline-dark">Participants</a>
                     </div>
                 </div>
