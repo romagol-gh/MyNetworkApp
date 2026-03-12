@@ -46,6 +46,15 @@ clearing:
 settlement:
   cron: "0 30 23 * * *"
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
 logging:
   level:
     com.network: INFO

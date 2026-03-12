@@ -53,6 +53,11 @@ public class FraudDetectionService {
                 Collectors.toMap(FraudRule::supportedType, Function.identity()));
     }
 
+    /** Force fraud rules to reload from DB on next evaluate() call (used by TestLabService). */
+    public void refreshCache() {
+        cachedRules = List.of();
+    }
+
     /** Refresh rule configs from DB every 60 seconds */
     @Scheduled(fixedDelay = 60_000)
     public void refreshRules() {

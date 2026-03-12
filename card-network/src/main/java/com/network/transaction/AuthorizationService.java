@@ -86,7 +86,7 @@ public class AuthorizationService {
         Optional<Participant> issuerOpt = binRouter.route(pan);
         if (issuerOpt.isEmpty()) {
             log.warn("No BIN match for PAN prefix: {}", pan.substring(0, Math.min(6, pan.length())));
-            sendError(acquirerChannel, request, ResponseCode.INVALID_CARD_NUMBER);
+            sendError(acquirerChannel, request, ResponseCode.NO_SUCH_ISSUER);
             return;
         }
         Participant issuer = issuerOpt.get();

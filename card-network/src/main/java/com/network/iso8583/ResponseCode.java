@@ -13,6 +13,7 @@ public final class ResponseCode {
     public static final String INVALID_TRANSACTION        = "12";
     public static final String INVALID_AMOUNT             = "13";
     public static final String INVALID_CARD_NUMBER        = "14";
+    public static final String NO_SUCH_ISSUER             = "15";
     public static final String INSUFFICIENT_FUNDS         = "51";
     public static final String NO_CHECKING_ACCOUNT        = "52";
     public static final String EXPIRED_CARD               = "54";

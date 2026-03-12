@@ -2,6 +2,7 @@ package com.network.settlement;
 
 import com.network.clearing.ClearingEngine;
 import com.network.domain.ClearingBatch;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,6 +27,7 @@ public class SettlementJob {
     }
 
     @Scheduled(cron = "${settlement.cron:0 30 23 * * *}", zone = "UTC")
+    @SchedulerLock(name = "settlementJob", lockAtMostFor = "PT30M", lockAtLeastFor = "PT1M")
     public void run() {
         log.info("Starting scheduled settlement...");
         ClearingBatch batch = clearingEngine.runClearing(LocalDate.now());

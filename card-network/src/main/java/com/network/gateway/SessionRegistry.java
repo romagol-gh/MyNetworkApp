@@ -38,6 +38,19 @@ public class SessionRegistry {
         }
     }
 
+    /**
+     * Remove a participant session by code and gracefully close the underlying channel.
+     * Used by TestScenarioRunner to clean up fake-issuer channels between scenarios.
+     */
+    public void deregisterByCode(String participantCode) {
+        Channel ch = byCode.remove(participantCode);
+        if (ch != null) {
+            byChannel.remove(ch.id());
+            if (ch.isActive()) ch.close();
+            log.info("Deregistered session by code: {}", participantCode);
+        }
+    }
+
     public Optional<Channel> getChannel(String participantCode) {
         Channel ch = byCode.get(participantCode);
         return (ch != null && ch.isActive()) ? Optional.of(ch) : Optional.empty();
