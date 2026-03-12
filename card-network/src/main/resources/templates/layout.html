@@ -6,85 +6,415 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title th:text="${title} + ' — Card Network'">Card Network</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
     <style>
-        body { background: #f8f9fa; }
-        .sidebar { min-height: 100vh; background: #212529; }
-        .sidebar .nav-link { color: #adb5bd; }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; }
-        .sidebar .nav-link .bi { margin-right: 8px; }
-        .stat-card { border-left: 4px solid; }
-        .stat-card.primary { border-color: #0d6efd; }
-        .stat-card.success { border-color: #198754; }
-        .stat-card.warning { border-color: #ffc107; }
-        .stat-card.danger  { border-color: #dc3545; }
+        :root {
+            --bg-body:    #0d1117;
+            --bg-sidebar: #161b22;
+            --bg-card:    #161b22;
+            --bg-card2:   #1c2333;
+            --border:     #30363d;
+            --accent:     #2f81f7;
+            --text-primary: #e6edf3;
+            --text-muted:   #7d8590;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            font-size: .9rem;
+        }
+
+        /* ── Sidebar ───────────────────────────────────── */
+        .sidebar {
+            min-height: 100vh;
+            width: 220px;
+            min-width: 220px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 16px 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 6px;
+        }
+        .sidebar-brand:hover { color: #fff; }
+
+        .brand-icon {
+            width: 30px; height: 30px;
+            background: linear-gradient(135deg, #2f81f7 0%, #0dcaf0 100%);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .85rem; color: #fff; font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav { padding: 0 8px; flex: 1; }
+
+        .sidebar .nav-link {
+            color: var(--text-muted);
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: .825rem;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            transition: color .12s, background .12s;
+            margin-bottom: 1px;
+        }
+        .sidebar .nav-link:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,.05);
+        }
+        .sidebar .nav-link.active {
+            color: #fff;
+            background: rgba(47,129,247,.15);
+        }
+        .sidebar .nav-link i {
+            font-size: .95rem;
+            width: 16px;
+            text-align: center;
+            opacity: .75;
+        }
+        .sidebar .nav-link.active i { opacity: 1; color: var(--accent); }
+
+        .sidebar-section {
+            font-size: .65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-muted);
+            padding: 14px 10px 4px;
+            opacity: .6;
+        }
+
+        .sidebar-footer {
+            padding: 12px 10px 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── Main content ───────────────────────────────── */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 28px 32px;
+            background: var(--bg-body);
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .page-header h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-primary);
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+        }
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 14px 16px;
+            font-size: .875rem;
+        }
+        .card-body { padding: 16px; }
+        .card-title { font-size: .875rem; font-weight: 600; margin-bottom: 8px; }
+
+        /* ── Stat cards ─────────────────────────────────── */
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(0,0,0,.4);
+            border-color: rgba(255,255,255,.12);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            border-radius: 10px 10px 0 0;
+        }
+        .stat-card.primary::after  { background: linear-gradient(90deg,#2f81f7,#0dcaf0); }
+        .stat-card.success::after  { background: linear-gradient(90deg,#3fb950,#2ea043); }
+        .stat-card.warning::after  { background: linear-gradient(90deg,#d29922,#e3b341); }
+        .stat-card.danger::after   { background: linear-gradient(90deg,#f85149,#da3633); }
+        .stat-card.purple::after   { background: linear-gradient(90deg,#8b5cf6,#a78bfa); }
+        .stat-card.cyan::after     { background: linear-gradient(90deg,#0dcaf0,#22d3ee); }
+
+        .stat-icon {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .stat-card.primary .stat-icon  { color: #2f81f7; }
+        .stat-card.success .stat-icon  { color: #3fb950; }
+        .stat-card.warning .stat-icon  { color: #e3b341; }
+        .stat-card.danger  .stat-icon  { color: #f85149; }
+        .stat-card.purple  .stat-icon  { color: #a78bfa; }
+        .stat-card.cyan    .stat-icon  { color: #22d3ee; }
+
+        .stat-label {
+            font-size: .7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+        .stat-sub {
+            font-size: .7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* ── Tables ─────────────────────────────────────── */
+        .table {
+            color: var(--text-primary);
+            margin-bottom: 0;
+        }
+        .table thead th {
+            background: rgba(255,255,255,.025);
+            color: var(--text-muted);
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 14px;
+            white-space: nowrap;
+        }
+        .table > :not(caption) > * > * {
+            background-color: transparent;
+            border-bottom-color: var(--border);
+            color: var(--text-primary);
+            padding: 10px 14px;
+        }
+        .table-hover > tbody > tr:hover > * {
+            background-color: rgba(255,255,255,.025);
+            cursor: default;
+        }
+        .table-light {
+            --bs-table-bg: transparent;
+        }
+        .table-responsive { border-radius: 0 0 10px 10px; }
+
+        /* ── Badges ─────────────────────────────────────── */
+        .badge { font-weight: 600; letter-spacing: .02em; font-size: .7rem; }
+
+        /* ── Forms ──────────────────────────────────────── */
+        .form-control, .form-select {
+            background: var(--bg-body);
+            border-color: var(--border);
+            color: var(--text-primary);
+            border-radius: 6px;
+            font-size: .875rem;
+        }
+        .form-control:focus, .form-select:focus {
+            background: var(--bg-body);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(47,129,247,.12);
+        }
+        .form-control::placeholder { color: var(--text-muted); }
+        .form-select option { background: #1c2333; }
+        .form-label { font-size: .8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+
+        /* ── Buttons ────────────────────────────────────── */
+        .btn-outline-secondary {
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+        .btn-outline-secondary:hover {
+            background: rgba(255,255,255,.06);
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,.15);
+        }
+        .btn-outline-primary  { border-color: #2f81f7; color: #2f81f7; }
+        .btn-outline-primary:hover  { background: rgba(47,129,247,.15); color: #58a6ff; border-color: #58a6ff; }
+        .btn-outline-danger   { border-color: #f85149; color: #f85149; }
+        .btn-outline-danger:hover   { background: rgba(248,81,73,.15); color: #ff6b6b; border-color: #ff6b6b; }
+        .btn-outline-dark     { border-color: var(--border); color: var(--text-muted); }
+        .btn-outline-dark:hover     { background: rgba(255,255,255,.06); color: var(--text-primary); }
+
+        /* ── Alerts ─────────────────────────────────────── */
+        .alert-success {
+            background: rgba(63,185,80,.08);
+            border-color: rgba(63,185,80,.2);
+            color: #3fb950;
+        }
+        .alert-warning {
+            background: rgba(210,153,34,.08);
+            border-color: rgba(210,153,34,.2);
+            color: #e3b341;
+        }
+
+        /* ── Misc ───────────────────────────────────────── */
+        .text-muted { color: var(--text-muted) !important; }
+        .small      { font-size: .8rem !important; }
+        code {
+            color: #79c0ff;
+            background: rgba(121,192,255,.1);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: .85em;
+        }
+        hr { border-color: var(--border); opacity: 1; }
+        .modal-content { background: var(--bg-card2); border: 1px solid var(--border); color: var(--text-primary); }
+        .modal-header  { border-bottom-color: var(--border); }
+        .modal-footer  { border-top-color: var(--border); }
     </style>
 </head>
 <body>
 <div th:fragment="layout(title, content)" class="d-flex">
+
     <!-- Sidebar -->
-    <nav class="sidebar d-flex flex-column p-3" style="width:230px; min-width:230px;">
-        <a class="navbar-brand text-white fw-bold mb-4 d-block" th:href="@{/}">
-            &#9632; Card Network
+    <nav class="sidebar">
+        <a class="sidebar-brand" th:href="@{/}">
+            <div class="brand-icon">CN</div>
+            Card Network
         </a>
-        <ul class="nav flex-column gap-1">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/}" th:classappend="${currentUri == '/' ? 'active' : ''}">
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/participants}">Participants</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/bin-ranges}">BIN Ranges</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/transactions}">Transactions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/clearing}">Clearing</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/settlement}">Settlement</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/fees}"
-                   th:classappend="${currentUri != null and currentUri.startsWith('/fees') ? 'active' : ''}">Fees</a>
-            </li>
-            <li class="nav-item mt-2 text-uppercase text-muted small px-2">Fraud</li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/fraud/rules}">Rules</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/fraud/alerts}">Alerts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/fraud/blacklist}">Blacklist</a>
-            </li>
-            <li class="nav-item mt-2 text-uppercase text-muted small px-2">Testing</li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/test-lab}"
-                   th:classappend="${currentUri != null and currentUri.startsWith('/test-lab') ? 'active' : ''}">Test Lab</a>
-            </li>
-        </ul>
-        <div class="mt-auto">
+
+        <div class="sidebar-nav">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}"
+                       th:classappend="${currentUri == '/' ? 'active' : ''}">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/participants}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/participants') ? 'active' : ''}">
+                        <i class="bi bi-building"></i> Participants
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/bin-ranges}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/bin-ranges') ? 'active' : ''}">
+                        <i class="bi bi-credit-card-2-front"></i> BIN Ranges
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/transactions}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/transactions') ? 'active' : ''}">
+                        <i class="bi bi-arrow-left-right"></i> Transactions
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clearing}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/clearing') ? 'active' : ''}">
+                        <i class="bi bi-stack"></i> Clearing
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/settlement}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/settlement') ? 'active' : ''}">
+                        <i class="bi bi-calculator"></i> Settlement
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/fees}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/fees') ? 'active' : ''}">
+                        <i class="bi bi-currency-dollar"></i> Fees
+                    </a>
+                </li>
+
+                <li class="sidebar-section">Fraud</li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/fraud/rules}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/fraud/rules') ? 'active' : ''}">
+                        <i class="bi bi-shield-exclamation"></i> Rules
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/fraud/alerts}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/fraud/alerts') ? 'active' : ''}">
+                        <i class="bi bi-bell"></i> Alerts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/fraud/blacklist}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/fraud/blacklist') ? 'active' : ''}">
+                        <i class="bi bi-slash-circle"></i> Blacklist
+                    </a>
+                </li>
+
+                <li class="sidebar-section">Testing</li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/test-lab}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/test-lab') ? 'active' : ''}">
+                        <i class="bi bi-flask"></i> Test Lab
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
             <form th:action="@{/logout}" method="post">
-                <button class="btn btn-sm btn-outline-secondary w-100 text-white" type="submit">Sign out</button>
+                <button class="btn btn-sm w-100"
+                        style="background:rgba(255,255,255,.05); color:var(--text-muted); border:1px solid var(--border);"
+                        type="submit">
+                    <i class="bi bi-box-arrow-right"></i> Sign out
+                </button>
             </form>
         </div>
     </nav>
 
     <!-- Main content -->
-    <div class="flex-grow-1 p-4">
-        <h4 class="mb-4" th:text="${title}"></h4>
-
-        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <span th:text="${success}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="main-content flex-grow-1">
+        <div class="page-header">
+            <h4 th:text="${title}"></h4>
         </div>
-        <div th:if="${warning}" class="alert alert-warning alert-dismissible fade show" role="alert">
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${warning}" class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
             <span th:text="${warning}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
         </div>
 
         <div th:replace="${content}"></div>
