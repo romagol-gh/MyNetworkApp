@@ -574,10 +574,12 @@
   <div class="section-label lbl-purple">MANAGEMENT INTERFACES</div>
   <h2>REST API &amp; Admin Dashboard</h2>
 
-  <div class="grid-2" style="align-items:start;">
+  <div class="grid-2" style="align-items:start; gap:32px;">
+
+    <!-- Left: REST API table + security -->
     <div>
       <h3>REST API  <span style="font-size:.75rem; color:#64748b;">(HTTP Basic Auth)</span></h3>
-      <table style="margin-bottom:20px;">
+      <table style="margin-bottom:16px;">
         <thead><tr><th>Domain</th><th>Operations</th></tr></thead>
         <tbody>
           <tr><td class="blue">Participants</td><td>CRUD — create, read, update, deactivate</td></tr>
@@ -592,29 +594,110 @@
           <tr><td class="purple">Test Lab</td><td>List scenarios, run, view results</td></tr>
         </tbody>
       </table>
-    </div>
-    <div>
-      <h3>Dashboard Pages  <span style="font-size:.75rem; color:#64748b;">(Form Login)</span></h3>
-      <ul class="clean" style="margin-bottom:20px;">
-        <li><strong style="color:#fff;">/</strong> — KPIs: volume ($), approval rate, fee rules, latest batch fees</li>
-        <li><strong style="color:#fff;">/participants</strong> — List, create, edit participants</li>
-        <li><strong style="color:#fff;">/bin-ranges</strong> — BIN routing table management</li>
-        <li><strong style="color:#fff;">/transactions</strong> — Paginated log with detail view</li>
-        <li><strong style="color:#fff;">/clearing</strong> — Batch history + total fees column</li>
-        <li><strong style="color:#fff;">/settlement</strong> — Net positions with interchange &amp; network fee columns</li>
-        <li><strong style="color:#22d3ee;">/fees</strong> — Fee schedule table + per-participant fee report + CSV download</li>
-        <li><strong style="color:#fff;">/fraud/rules</strong> — Rule config, enable/disable toggles</li>
-        <li><strong style="color:#fff;">/fraud/alerts</strong> — Review queue with scores</li>
-        <li><strong style="color:#fff;">/fraud/blacklist</strong> — Blacklist management</li>
-        <li><strong style="color:#fff;">/test-lab</strong> — Interactive scenario runner</li>
-      </ul>
-      <div class="card">
+      <div class="card" style="font-size:.78rem;">
         <h3>Security Model</h3>
-        <p style="font-size:.8rem;">Dashboard uses Spring Security form login. REST API uses HTTP Basic.
-        CSRF protection on web, disabled for <code style="color:#38bdf8;">/api/**</code>.
-        PANs are always masked in the database (first 6 + last 4 digits).</p>
+        Dashboard: Spring Security form login &nbsp;·&nbsp; REST: HTTP Basic<br>
+        CSRF disabled for <code style="color:#38bdf8;">/api/**</code> &nbsp;·&nbsp; PANs masked (first 6 + last 4)
       </div>
     </div>
+
+    <!-- Right: dashboard mockup -->
+    <div>
+      <h3>Dashboard UI  <span style="font-size:.75rem; color:#64748b;">(dark theme · Bootstrap Icons)</span></h3>
+
+      <!-- Browser chrome -->
+      <div style="border-radius:10px; overflow:hidden; border:1px solid #30363d; box-shadow:0 16px 48px rgba(0,0,0,.6);">
+        <!-- Title bar -->
+        <div style="background:#1c2333; padding:8px 14px; display:flex; align-items:center; gap:6px; border-bottom:1px solid #30363d;">
+          <span style="width:10px;height:10px;border-radius:50%;background:#f85149;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#e3b341;display:inline-block;"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:#3fb950;display:inline-block;"></span>
+          <span style="flex:1; text-align:center; font-size:.65rem; color:#7d8590;">localhost:8080</span>
+        </div>
+        <!-- App layout -->
+        <div style="display:flex; height:260px; background:#0d1117;">
+          <!-- Mini sidebar -->
+          <div style="width:110px; background:#161b22; border-right:1px solid #30363d; padding:10px 6px; display:flex; flex-direction:column; gap:2px; flex-shrink:0;">
+            <div style="font-size:.55rem; font-weight:700; color:#e6edf3; padding:4px 6px 8px; border-bottom:1px solid #30363d; margin-bottom:6px; display:flex; align-items:center; gap:5px;">
+              <span style="background:linear-gradient(135deg,#2f81f7,#0dcaf0);border-radius:4px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:.5rem;color:#fff;font-weight:800;">CN</span>
+              Card Network
+            </div>
+            <div style="font-size:.55rem; padding:4px 6px; border-radius:4px; color:#fff; background:rgba(47,129,247,.18); display:flex; align-items:center; gap:4px;">⚡ Dashboard</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">🏢 Participants</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">💳 BIN Ranges</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">⇄ Transactions</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">≡ Clearing</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">∑ Settlement</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">$ Fees</div>
+            <div style="font-size:.45rem; padding:6px 6px 2px; color:#7d8590; text-transform:uppercase; letter-spacing:.08em; opacity:.6;">Fraud</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">🛡 Rules</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">🔔 Alerts</div>
+            <div style="font-size:.45rem; padding:6px 6px 2px; color:#7d8590; text-transform:uppercase; letter-spacing:.08em; opacity:.6;">Testing</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">⚗ Test Lab</div>
+          </div>
+          <!-- Main area -->
+          <div style="flex:1; padding:12px; overflow:hidden;">
+            <div style="font-size:.65rem; font-weight:600; color:#e6edf3; padding-bottom:8px; border-bottom:1px solid #30363d; margin-bottom:10px;">Dashboard</div>
+            <!-- 6 stat cards -->
+            <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:5px; margin-bottom:10px;">
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#2f81f7,#0dcaf0);"></div>
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Transactions</div>
+                <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">1,284</div>
+              </div>
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#3fb950,#2ea043);"></div>
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Approval Rate</div>
+                <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">98.7%</div>
+              </div>
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#d29922,#e3b341);"></div>
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Volume</div>
+                <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">$48.2k</div>
+              </div>
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f85149,#da3633);"></div>
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Fraud Alerts</div>
+                <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">3</div>
+              </div>
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#8b5cf6,#a78bfa);"></div>
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Fee Rules</div>
+                <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">7</div>
+              </div>
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#0dcaf0,#22d3ee);"></div>
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Batch Fees</div>
+                <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">$1.35</div>
+              </div>
+            </div>
+            <!-- Bottom cards -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:8px;">
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:3px;">Active TCP Sessions</div>
+                <div style="font-size:1rem;font-weight:700;color:#2f81f7;">2</div>
+                <div style="font-size:.4rem;color:#7d8590;">Acquirers &amp; Issuers on port 8583</div>
+              </div>
+              <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:8px;">
+                <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:5px;">Quick Links</div>
+                <div style="display:flex; flex-wrap:wrap; gap:3px;">
+                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#58a6ff;">⇄ Txns</span>
+                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#f85149;">🔔 Fraud</span>
+                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#7d8590;">≡ Clear</span>
+                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#7d8590;">$ Fees</span>
+                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#7d8590;">⚗ Lab</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:.72rem; color:#64748b; margin-top:10px;">
+        Dark theme (GitHub palette) · Bootstrap Icons nav · Gradient accent stat cards · Hover lift animation · 11 pages
+      </p>
+    </div>
+
   </div>
 </div>
 
