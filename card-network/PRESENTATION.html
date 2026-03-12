@@ -668,6 +668,17 @@
         applied. Interchange rate seeds verified at integration level.
         ISO 8583 bytes over TCP. Colima (macOS Docker) supported.</p>
       </div>
+      <div class="card" style="border-color:#f59e0b; margin-top:12px;">
+        <h3 style="color:#fbbf24;">Bug Found &amp; Fixed in Production Validation</h3>
+        <p style="font-size:.8rem;">Browser testing of the new <code style="color:#22d3ee;">/fees</code> page
+        revealed a Thymeleaf template error: <code style="color:#f87171;">#numbers.formatDecimal()</code>
+        must always be wrapped in <code style="color:#38bdf8;">${…}</code>. The pattern
+        <code style="color:#f87171;">'$' + #numbers.formatDecimal(…)</code> was invalid and caused a 500
+        on <code style="color:#22d3ee;">/fees</code>, <code style="color:#22d3ee;">/settlement</code>, and
+        <code style="color:#22d3ee;">/clearing</code>. Fixed using Thymeleaf literal substitution:
+        <code style="color:#4ade80;">|$${#numbers.formatDecimal(…)}|</code>.
+        65/65 tests still pass after the fix.</p>
+      </div>
     </div>
   </div>
 </div>
