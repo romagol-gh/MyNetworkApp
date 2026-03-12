@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Test Lab', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <p class="text-muted mb-4">
+        Configure and trigger ISO 8583 test scenarios against the live gateway.
+        Results are persisted to the database and visible in the Recent Runs table below.
+    </p>
+
+    <!-- Scenario cards -->
+    <div class="row g-3 mb-5" id="scenario-grid">
+        <div th:each="s : ${scenarios}" class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <strong th:text="${s.displayName}">Scenario</strong>
+                    <span class="badge"
+                          th:classappend="'bg-' + ${s.badgeColour}"
+                          th:text="${s.defaultCount} + ' txn' + (${s.defaultCount} != 1 ? 's' : '')">1 txn</span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3" th:text="${s.description}">Description</p>
+
+                    <!-- Collapsible config form -->
+                    <div class="collapse" th:id="'cfg-' + ${s.name()}">
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="form-label small mb-1">Amount ($)</label>
+                                <input type="number" step="0.01" min="0.01"
+                                       class="form-control form-control-sm"
+                                       th:id="'amt-' + ${s.name()}"
+                                       th:value="${#numbers.formatDecimal(s.defaultAmountMinorUnits / 100.0, 1, 2)}">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small mb-1">Count</label>
+                                <input type="number" min="1" max="500"
+                                       class="form-control form-control-sm"
+                                       th:id="'cnt-' + ${s.name()}"
+                                       th:value="${s.defaultCount}">
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small mb-1">MCC</label>
+                            <input type="text" maxlength="4"
+                                   class="form-control form-control-sm"
+                                   th:id="'mcc-' + ${s.name()}"
+                                   th:value="${s.defaultMcc}">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small mb-1">Fraud Rule Overrides</label>
+                            <div th:id="'rules-' + ${s.name()}" class="small text-muted">Loading rules...</div>
+                        </div>
+                    </div>
+
+                    <!-- Result area -->
+                    <div th:id="'result-' + ${s.name()}" class="d-none mt-2 small"></div>
+                </div>
+                <div class="card-footer d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary"
+                            data-bs-toggle="collapse"
+                            th:data-bs-target="'#cfg-' + ${s.name()}">
+                        Configure
+                    </button>
+                    <button class="btn btn-sm btn-primary"
+                            onclick="runScenario(this.dataset.scenario)"
+                            th:data-scenario="${s.name()}"
+                            th:id="'run-' + ${s.name()}">
+                        &#9654; Run
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Runs -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Recent Runs</h5>
+        <small class="text-muted">Auto-refreshes every 5s</small>
+    </div>
+    <div id="recent-runs-container">
+        <p class="text-muted">Loading...</p>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script>
+    // ── Fraud rule data (loaded once) ─────────────────────────────────────────
+    fetch('/api/fraud/rules')
+        .then(r => r.json())
+        .then(rules => {
+            document.querySelectorAll('[id^="rules-"]').forEach(container => {
+                const scenarioName = container.id.replace('rules-', '');
+                container.innerHTML = rules.map(rule => `
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox"
+                               id="rule-${scenarioName}-${rule.id}"
+                               data-rule-name="${rule.name}"
+                               ${rule.enabled ? 'checked' : ''}>
+                        <label class="form-check-label text-truncate" style="max-width:130px;"
+                               title="${rule.name}"
+                               for="rule-${scenarioName}-${rule.id}">${rule.name}</label>
+                    </div>
+                `).join('');
+            });
+        })
+        .catch(() => {});
+
+    // ── Scenario runner ───────────────────────────────────────────────────────
+    function runScenario(name) {
+        const resultDiv = document.getElementById('result-' + name);
+        const runBtn    = document.getElementById('run-' + name);
+
+        resultDiv.classList.remove('d-none');
+        resultDiv.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span>Running\u2026';
+        runBtn.disabled = true;
+
+        const amtInput   = document.getElementById('amt-' + name);
+        const cntInput   = document.getElementById('cnt-' + name);
+        const mccInput   = document.getElementById('mcc-' + name);
+        const ruleInputs = document.querySelectorAll(`#rules-${name} input[type=checkbox]`);
+
+        const fraudRuleOverrides = {};
+        ruleInputs.forEach(chk => { fraudRuleOverrides[chk.dataset.ruleName] = chk.checked; });
+
+        const body = {
+            transactionCount:   parseInt(cntInput ? cntInput.value : '1'),
+            amountMinorUnits:   Math.round(parseFloat(amtInput ? amtInput.value : '100.00') * 100),
+            mcc:                mccInput ? mccInput.value.trim() : '5411',
+            fraudRuleOverrides: fraudRuleOverrides
+        };
+
+        fetch('/api/test-lab/scenarios/' + name + '/run', {
+            method:  'POST',
+            headers: {'Content-Type': 'application/json'},
+            body:    JSON.stringify(body)
+        })
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(run => {
+            const allPassed = run.failedTxns === 0 && run.totalTxns > 0;
+            const cls  = allPassed ? 'text-success' : (run.totalTxns === 0 ? 'text-danger' : 'text-warning');
+            const icon = allPassed ? '\u2713' : '\u2717';
+            const fraud = run.fraudDeclined > 0
+                ? ` <span class="text-danger ms-2">[${run.fraudDeclined} fraud-declined]</span>` : '';
+            resultDiv.innerHTML =
+                `<span class="${cls} fw-bold">${icon} ${run.passedTxns}/${run.totalTxns} passed</span>` +
+                fraud +
+                `<span class="text-muted ms-2">${run.durationMs ? run.durationMs + 'ms' : ''}</span>`;
+            refreshRecentRuns();
+        })
+        .catch(err => { resultDiv.innerHTML = `<span class="text-danger">\u2717 Error: ${err.message}</span>`; })
+        .finally(() => { runBtn.disabled = false; });
+    }
+
+    // ── Recent runs table ─────────────────────────────────────────────────────
+    function refreshRecentRuns() {
+        fetch('/api/test-lab/runs')
+            .then(r => r.json())
+            .then(runs => {
+                const container = document.getElementById('recent-runs-container');
+                if (!runs || runs.length === 0) {
+                    container.innerHTML = '<p class="text-muted small">No runs yet \u2014 click Run on any scenario above.</p>';
+                    return;
+                }
+                let html = `<div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                    <thead class="table-light"><tr>
+                        <th>Scenario</th><th>Pass / Total</th>
+                        <th>Fraud Declined</th><th>Duration</th><th>Started</th>
+                    </tr></thead><tbody>`;
+                runs.forEach(run => {
+                    const allPassed = run.failedTxns === 0 && run.totalTxns > 0;
+                    const cls  = allPassed ? 'text-success' : (run.totalTxns === 0 ? 'text-danger' : 'text-warning');
+                    const icon = allPassed ? '\u2713' : '\u2717';
+                    html += `<tr>
+                        <td><strong>${run.scenario}</strong></td>
+                        <td><span class="${cls}">${icon}</span> ${run.passedTxns} / ${run.totalTxns}</td>
+                        <td>${run.fraudDeclined > 0 ? '<span class="text-danger">' + run.fraudDeclined + '</span>' : run.fraudDeclined}</td>
+                        <td>${run.durationMs != null ? run.durationMs + ' ms' : '\u2014'}</td>
+                        <td class="text-muted small">${run.startedAt ? new Date(run.startedAt).toLocaleString() : '\u2014'}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+            })
+            .catch(() => {});
+    }
+
+    setInterval(refreshRecentRuns, 5000);
+    refreshRecentRuns();
+    </script>
+
+</div>
+</body>
+</html>
