@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:fragment="head(title)">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(title, content)">
+<head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title th:text="${title} + ' — Card Network'">Card Network</title>
@@ -26,6 +27,7 @@
             color: var(--text-primary);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
             font-size: .9rem;
+            margin: 0;
         }
 
         /* ── Sidebar ───────────────────────────────────── */
@@ -58,7 +60,7 @@
             background: linear-gradient(135deg, #2f81f7 0%, #0dcaf0 100%);
             border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-size: .85rem; color: #fff; font-weight: 800;
+            font-size: .75rem; color: #fff; font-weight: 800;
             flex-shrink: 0;
         }
 
@@ -118,9 +120,6 @@
             margin-bottom: 24px;
             padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
         .page-header h4 {
             font-size: 1.1rem;
@@ -231,11 +230,8 @@
         }
         .table-hover > tbody > tr:hover > * {
             background-color: rgba(255,255,255,.025);
-            cursor: default;
         }
-        .table-light {
-            --bs-table-bg: transparent;
-        }
+        .table-light { --bs-table-bg: transparent; }
         .table-responsive { border-radius: 0 0 10px 10px; }
 
         /* ── Badges ─────────────────────────────────────── */
@@ -305,7 +301,7 @@
     </style>
 </head>
 <body>
-<div th:fragment="layout(title, content)" class="d-flex">
+<div class="d-flex">
 
     <!-- Sidebar -->
     <nav class="sidebar">
@@ -417,7 +413,7 @@
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
         </div>
 
-        <div th:replace="${content}"></div>
+        <th:block th:replace="${content}"></th:block>
     </div>
 </div>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
