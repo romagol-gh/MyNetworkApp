@@ -137,6 +137,73 @@
   /* ── Footer ── */
   footer { background: #0a0f1a; text-align: center; padding: 32px;
            color: #334155; font-size: .8rem; border-top: 1px solid #1e2533; }
+
+  /* ══════════════════════════════════════════
+     PRINT / PDF STYLES  (landscape A4)
+     ══════════════════════════════════════════ */
+  @page { size: A4 landscape; margin: 12mm 14mm; }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important; }
+
+    body { background: #0f1117 !important; }
+
+    /* One slide = one page */
+    .slide {
+      min-height: unset !important;
+      height: 186mm !important;          /* 210mm − 2×12mm margin */
+      width:  269mm !important;          /* 297mm − 2×14mm margin */
+      padding: 18px 36px !important;
+      page-break-after: always !important;
+      break-after: page !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      overflow: hidden !important;
+      border-bottom: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+    }
+
+    /* Scale down typography for print */
+    h1 { font-size: 2.4rem !important; margin-bottom: 8px !important; }
+    h2 { font-size: 1.5rem !important; margin-bottom: 18px !important; }
+    h3 { font-size: .85rem !important; margin-bottom: 8px !important; }
+    p  { font-size: .82rem !important; margin-bottom: 6px !important; }
+    .subtitle { font-size: 1rem !important; }
+    .tagline  { font-size: .9rem !important; }
+    .slide-num { font-size: .65rem !important; top: 10px !important; right: 18px !important; }
+
+    /* Keep content blocks together — never split across pages */
+    .card, table, .flow, .arch, .arch-col, .arch-box,
+    .gap-item, .kpi, .mono, .grid-2, .grid-3, .grid-4 {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Compact grids and cards */
+    .grid-2 { gap: 12px !important; }
+    .grid-3 { gap: 10px !important; }
+    .grid-4 { gap: 10px !important; }
+    .card { padding: 12px 16px !important; }
+    .card-icon { font-size: 1.4rem !important; margin-bottom: 8px !important; }
+    .card p { font-size: .78rem !important; }
+    .kpi .num { font-size: 2rem !important; }
+    .kpi .lbl { font-size: .7rem !important; }
+    .divider { margin: 12px 0 !important; }
+    .section-label { margin-bottom: 10px !important; }
+    .flow-box { padding: 8px 12px !important; font-size: .78rem !important; }
+    table { font-size: .78rem !important; }
+    th, td { padding: 6px 10px !important; }
+    .mono { font-size: .74rem !important; padding: 10px 12px !important; line-height: 1.6 !important; }
+    ul.clean li { font-size: .82rem !important; padding: 4px 0 !important; }
+    .arch-box { padding: 8px !important; font-size: .74rem !important; }
+    .gap-text strong { font-size: .82rem !important; }
+    .gap-text p { font-size: .72rem !important; }
+
+    footer { display: none !important; }
+  }
 </style>
 </head>
 <body>
