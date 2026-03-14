@@ -157,7 +157,7 @@
       <div class="kpi"><span class="num blue">4</span><span class="lbl">Message Types</span></div>
       <div class="kpi"><span class="num green">5</span><span class="lbl">Fraud Rules</span></div>
       <div class="kpi"><span class="num cyan">7</span><span class="lbl">Fee Rate Rules</span></div>
-      <div class="kpi"><span class="num orange">65</span><span class="lbl">Tests Passing</span></div>
+      <div class="kpi"><span class="num orange">70</span><span class="lbl">Tests Passing</span></div>
     </div>
   </div>
 </div>
@@ -166,7 +166,7 @@
      SLIDE 2 — WHAT WE BUILT
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">2 / 11</span>
+  <span class="slide-num">2 / 12</span>
   <div class="section-label lbl-blue">OVERVIEW</div>
   <h2>What Is This?</h2>
   <p style="font-size:1.05rem; max-width:820px; color:#cbd5e1; margin-bottom:36px;">
@@ -222,7 +222,7 @@
      SLIDE 3 — TRANSACTION FLOW
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">3 / 11</span>
+  <span class="slide-num">3 / 12</span>
   <div class="section-label lbl-blue">CORE PROTOCOL</div>
   <h2>ISO 8583 Transaction Flow</h2>
 
@@ -308,7 +308,7 @@
      SLIDE 4 — FRAUD ENGINE
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">4 / 11</span>
+  <span class="slide-num">4 / 12</span>
   <div class="section-label lbl-orange">FRAUD DETECTION</div>
   <h2>Real-time Fraud Engine</h2>
 
@@ -363,7 +363,7 @@
      SLIDE 5 — CLEARING & SETTLEMENT
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">5 / 11</span>
+  <span class="slide-num">5 / 12</span>
   <div class="section-label lbl-green">CLEARING &amp; SETTLEMENT</div>
   <h2>End-of-Day Processing</h2>
 
@@ -433,7 +433,7 @@
      SLIDE 6 — INTERCHANGE FEE ENGINE
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">6 / 11</span>
+  <span class="slide-num">6 / 12</span>
   <div class="section-label lbl-cyan">INTERCHANGE PRICING</div>
   <h2>Interchange &amp; Network Fee Engine</h2>
 
@@ -570,7 +570,7 @@
      SLIDE 7 — REST API & DASHBOARD
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">7 / 11</span>
+  <span class="slide-num">7 / 12</span>
   <div class="section-label lbl-purple">MANAGEMENT INTERFACES</div>
   <h2>REST API &amp; Admin Dashboard</h2>
 
@@ -705,9 +705,9 @@
      SLIDE 8 — TEST COVERAGE
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">8 / 11</span>
+  <span class="slide-num">8 / 12</span>
   <div class="section-label lbl-blue">QUALITY</div>
-  <h2>Test Coverage — 65 Tests, 0 Failures</h2>
+  <h2>Test Coverage — 70 Tests, 0 Failures</h2>
 
   <div class="grid-2" style="align-items:start; margin-bottom:28px;">
     <div>
@@ -746,6 +746,8 @@
         <li><strong style="color:#fff;">GatewayIntegrationTest</strong> — Full TCP stack, Testcontainers PG</li>
         <li><strong style="color:#fff;">AuthorizationE2ETest</strong> — Full auth flow: acquire → fraud → route → issue → respond</li>
         <li><strong style="color:#fff;">LiveAuthDemoTest</strong> — Real-time 0100 approval with human-readable log output</li>
+        <li><strong style="color:#f59e0b;">VolumeTest</strong> — 3 scenarios: 500 concurrent txns, 200-burst, 100 connection churn cycles</li>
+        <li><strong style="color:#f59e0b;">DurationTest</strong> — 2 scenarios: 30-second sustained (≥60 txns), 5-client 20-second (≥100 txns)</li>
       </ul>
       <div class="card accent-green">
         <h3>Infrastructure</h3>
@@ -762,17 +764,75 @@
         on <code style="color:#22d3ee;">/fees</code>, <code style="color:#22d3ee;">/settlement</code>, and
         <code style="color:#22d3ee;">/clearing</code>. Fixed using Thymeleaf literal substitution:
         <code style="color:#4ade80;">|$${#numbers.formatDecimal(…)}|</code>.
-        65/65 tests still pass after the fix.</p>
+        70/70 tests still pass after the fix.</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     SLIDE 9 — ARCHITECTURE
+     SLIDE 9 — PERFORMANCE TESTING
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">9 / 11</span>
+  <span class="slide-num">9 / 12</span>
+  <div class="section-label lbl-orange">PERFORMANCE</div>
+  <h2>Volume &amp; Duration Tests — 5 Tests, 0 Failures</h2>
+
+  <div class="grid-2" style="align-items:start; margin-bottom:28px;">
+    <div>
+      <h3>VolumeTest — Concurrent Load</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Load</th><th>Pass Threshold</th></tr></thead>
+        <tbody>
+          <tr><td class="green">Concurrent 500</td><td>10 clients × 50 txns</td><td>≥ 490 approved (98%)</td></tr>
+          <tr><td class="green">Burst 200</td><td>20 clients × 10 txns</td><td>≥ 196 approved (98%)</td></tr>
+          <tr><td class="green">Connection Churn</td><td>100 sequential sign-on / off cycles</td><td>100 / 100 complete</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top:20px;">DurationTest — Sustained Throughput</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Duration</th><th>Pass Threshold</th></tr></thead>
+        <tbody>
+          <tr><td class="blue">Sustained 30 s</td><td>1 client, back-to-back, 30 seconds</td><td>≥ 60 txns · 0 failures</td></tr>
+          <tr><td class="blue">Multi-client 20 s</td><td>5 clients simultaneously, 20 seconds</td><td>≥ 100 txns (≥ 10 tps)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="card" style="border-color:#f59e0b;">
+        <h3 style="color:#fbbf24;">Race Condition — Found &amp; Fixed</h3>
+        <p style="font-size:.8rem;">Writing concurrent tests immediately exposed a race in
+        <code style="color:#22d3ee;">ParticipantConnector.send()</code>: multiple threads each saw
+        an empty session registry and called
+        <code style="color:#22d3ee;">bootstrap.connect().sync()</code> simultaneously. Only 1
+        connection was accepted by the fake issuer's <code style="color:#22d3ee;">ServerSocket</code>;
+        the remaining N−1 were zombie channels. Last
+        <code style="color:#22d3ee;">register()</code> overwrote the registry with a zombie →
+        only 1 transaction approved, all others timed out.</p>
+        <p style="font-size:.8rem; margin-top:8px;"><strong style="color:#4ade80;">Fix:</strong>
+        Per-issuer double-checked locking with
+        <code style="color:#22d3ee;">ConcurrentHashMap&lt;String, Object&gt;</code> lock objects.
+        The check-then-connect sequence is now atomic per issuer code. All 5 performance tests
+        pass. Run time dropped from 17 min → 2:40 min.</p>
+      </div>
+      <div class="card accent-green" style="margin-top:12px;">
+        <h3>Test Infrastructure</h3>
+        <p style="font-size:.8rem;">Each class runs a full Spring context with Testcontainers
+        PostgreSQL. A raw Java <code style="color:#22d3ee;">ServerSocket</code> plays the issuer,
+        parsing ISO 8583 frames and replying with 0110 approvals. Participants sign on with
+        0800 NMC=001 before the test loop. Unique gateway ports (18590 / 18591) prevent
+        inter-class interference.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 10 — ARCHITECTURE
+════════════════════════════════════════════════════════ -->
+<div class="slide">
+  <span class="slide-num">10 / 12</span>
   <div class="section-label lbl-gray">ARCHITECTURE</div>
   <h2>System Architecture</h2>
 
@@ -844,10 +904,10 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     SLIDE 10 — WHAT'S MISSING
+     SLIDE 11 — WHAT'S MISSING
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">10 / 11</span>
+  <span class="slide-num">11 / 12</span>
   <div class="section-label lbl-red">GAPS &amp; ROADMAP</div>
   <h2>What's Still Missing</h2>
 
@@ -932,10 +992,10 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     SLIDE 11 — SUMMARY
+     SLIDE 12 — SUMMARY
 ════════════════════════════════════════════════════════ -->
 <div class="slide cover" style="background: linear-gradient(135deg, #0a1628 0%, #0d2137 60%, #111827 100%);">
-  <span class="slide-num" style="color:#334155;">11 / 11</span>
+  <span class="slide-num" style="color:#334155;">12 / 12</span>
   <div style="max-width:900px; width:100%;">
     <div class="section-label lbl-gray" style="margin-bottom:24px;">SUMMARY</div>
     <h2 style="font-size:2.5rem; margin-bottom:36px;">What We Have vs. What's Next</h2>
@@ -953,7 +1013,7 @@
           <li>Operations dashboard — 11 pages</li>
           <li>REST API — 35+ endpoints</li>
           <li>Interactive Test Lab — 12 scenarios</li>
-          <li>65 automated tests (unit + integration + volume)</li>
+          <li>70 automated tests (unit + integration + volume + duration)</li>
           <li>Terraform IaC for AWS ECS Fargate multi-AZ</li>
         </ul>
       </div>
@@ -977,7 +1037,7 @@
       <div class="kpi"><span class="num blue">4</span><span class="lbl">Message Types</span></div>
       <div class="kpi"><span class="num green">5</span><span class="lbl">Fraud Rules</span></div>
       <div class="kpi"><span class="num cyan">7</span><span class="lbl">Fee Rate Rules</span></div>
-      <div class="kpi"><span class="num orange">65</span><span class="lbl">Tests Passing</span></div>
+      <div class="kpi"><span class="num orange">70</span><span class="lbl">Tests Passing</span></div>
     </div>
   </div>
 </div>

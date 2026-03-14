@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,6 +42,9 @@ public class ParticipantConnector {
 
     private EventLoopGroup clientGroup;
 
+    /** Per-issuer-code lock objects used to serialize the check-then-connect sequence. */
+    private final ConcurrentHashMap<String, Object> connectLocks = new ConcurrentHashMap<>();
+
     public ParticipantConnector(SessionRegistry sessionRegistry,
                                 @Lazy GatewayMessageHandler gatewayMessageHandler,
                                 MessageFactory messageFactory) {
@@ -61,42 +65,58 @@ public class ParticipantConnector {
 
     /**
      * Send an ISO 8583 message to an issuer.
-     * If the issuer is already connected, reuse the channel.
-     * Otherwise, establish a new connection first.
+     * Reuses an existing active channel, or establishes a new one.
+     * Uses per-issuer double-checked locking to prevent concurrent threads from
+     * each creating a separate outbound connection to the same issuer.
      */
     public void send(Participant issuer, IsoMessage msg) {
+        write(getOrConnectChannel(issuer), msg);
+    }
+
+    private Channel getOrConnectChannel(Participant issuer) {
+        // Fast path: channel already registered and active
         Optional<Channel> existing = sessionRegistry.getChannel(issuer.getCode());
         if (existing.isPresent()) {
-            write(existing.get(), msg);
-            return;
+            return existing.get();
         }
 
         if (issuer.getHost() == null || issuer.getPort() == null) {
             throw new IllegalStateException("Issuer " + issuer.getCode() + " has no host/port configured");
         }
 
-        try {
-            Bootstrap bootstrap = new Bootstrap()
-                    .group(clientGroup)
-                    .channel(NioSocketChannel.class)
-                    .handler(new ChannelInitializer<SocketChannel>() {
-                        @Override
-                        protected void initChannel(SocketChannel ch) {
-                            ch.pipeline()
-                                    .addLast(new IdleStateHandler(300, 0, 0, TimeUnit.SECONDS))
-                                    .addLast(new Iso8583FrameDecoder())
-                                    .addLast(new Iso8583Encoder())
-                                    .addLast(gatewayMessageHandler);
-                        }
-                    });
+        // Slow path: per-issuer lock prevents multiple threads from each opening
+        // a separate TCP connection to the same issuer simultaneously.
+        Object lock = connectLocks.computeIfAbsent(issuer.getCode(), k -> new Object());
+        synchronized (lock) {
+            // Double-check: another thread may have connected while we waited
+            existing = sessionRegistry.getChannel(issuer.getCode());
+            if (existing.isPresent()) {
+                return existing.get();
+            }
 
-            ChannelFuture future = bootstrap.connect(issuer.getHost(), issuer.getPort()).sync();
-            Channel ch = future.channel();
-            sessionRegistry.register(issuer.getCode(), ch);
-            write(ch, msg);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Interrupted while connecting to issuer " + issuer.getCode(), e);
+            try {
+                Bootstrap bootstrap = new Bootstrap()
+                        .group(clientGroup)
+                        .channel(NioSocketChannel.class)
+                        .handler(new ChannelInitializer<SocketChannel>() {
+                            @Override
+                            protected void initChannel(SocketChannel ch) {
+                                ch.pipeline()
+                                        .addLast(new IdleStateHandler(300, 0, 0, TimeUnit.SECONDS))
+                                        .addLast(new Iso8583FrameDecoder())
+                                        .addLast(new Iso8583Encoder())
+                                        .addLast(gatewayMessageHandler);
+                            }
+                        });
+
+                ChannelFuture future = bootstrap.connect(issuer.getHost(), issuer.getPort()).sync();
+                Channel ch = future.channel();
+                sessionRegistry.register(issuer.getCode(), ch);
+                return ch;
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted while connecting to issuer " + issuer.getCode(), e);
+            }
         }
     }
 
