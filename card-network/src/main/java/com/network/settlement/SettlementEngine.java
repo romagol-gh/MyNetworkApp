@@ -40,8 +40,15 @@ public class SettlementEngine {
 
     @Transactional
     public List<SettlementRecord> settle(ClearingBatch batch) {
-        List<ClearingRecord> records = clearingRecordRepository.findByBatchId(batch.getId());
         LocalDate settlementDate = batch.getBatchDate();
+
+        List<SettlementRecord> existing = settlementRecordRepository.findBySettlementDate(settlementDate);
+        if (!existing.isEmpty()) {
+            log.warn("Settlement already run for date: {}", settlementDate);
+            return existing;
+        }
+
+        List<ClearingRecord> records = clearingRecordRepository.findByBatchId(batch.getId());
 
         // participant UUID → {debit, credit, interchangePaid, interchangeReceived, networkFees}
         Map<UUID, long[]> positions = new HashMap<>();
