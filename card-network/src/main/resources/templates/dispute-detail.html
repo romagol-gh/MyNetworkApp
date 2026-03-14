@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Dispute Detail', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="mb-3">
+        <a href="/disputes" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Disputes
+        </a>
+    </div>
+
+    <div class="row g-3">
+        <!-- Left: details -->
+        <div class="col-md-8">
+
+            <!-- Summary card -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="mb-0">Dispute
+                            <span class="font-monospace text-muted small"
+                                  th:text="${dispute.id}"></span>
+                        </h5>
+                        <span class="badge fs-6"
+                              th:classappend="${dispute.status.name() == 'WON' ? 'bg-success' :
+                                              dispute.status.name() == 'LOST' ? 'bg-danger' :
+                                              dispute.status.name() == 'WITHDRAWN' ? 'bg-secondary' :
+                                              dispute.status.name() == 'ARBITRATION' ? 'bg-warning text-dark' :
+                                              dispute.status.name() == 'ACCEPTED' or dispute.status.name() == 'REPRESENTMENT' ? 'bg-primary' :
+                                              'bg-warning text-dark'}"
+                              th:text="${dispute.status}"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">Transaction</div>
+                            <div class="font-monospace"
+                                 th:text="${dispute.transaction.panMasked}"></div>
+                            <div class="text-muted small">
+                                Retrieval ref: <span th:text="${dispute.transaction.retrievalRef}"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">Chargeback Amount</div>
+                            <div class="fs-5 fw-bold"
+                                 th:text="|$${#numbers.formatDecimal(dispute.chargebackAmount / 100.0, 1, 2)}|"></div>
+                            <div class="text-muted small">
+                                Original: <span th:text="|$${#numbers.formatDecimal(dispute.transaction.amount / 100.0, 1, 2)}|"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">Reason Code</div>
+                            <div><strong th:text="${dispute.reasonCode}"></strong>
+                                &nbsp;<span class="badge bg-secondary"
+                                            th:text="${dispute.reasonNetwork}"></span></div>
+                            <div class="text-muted small" th:text="${reasonDescription}"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="text-muted small mb-1">Initiator</div>
+                            <div th:text="${dispute.initiator.name}"></div>
+                            <div class="text-muted small"
+                                 th:text="${dispute.initiator.code}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">Timeline</h6>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary">Initiated</span>
+                            <span class="small"
+                                  th:text="${#temporals.format(dispute.initiatedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2"
+                             th:if="${dispute.respondedAt != null}">
+                            <span class="badge bg-info text-dark">Responded</span>
+                            <span class="small"
+                                  th:text="${#temporals.format(dispute.respondedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2"
+                             th:if="${dispute.resolvedAt != null}">
+                            <span class="badge"
+                                  th:classappend="${dispute.status.name() == 'WON' ? 'bg-success' : dispute.status.name() == 'LOST' ? 'bg-danger' : 'bg-secondary'}"
+                                  th:text="${dispute.status}"></span>
+                            <span class="small"
+                                  th:text="${#temporals.format(dispute.resolvedAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="card" th:if="${dispute.notes != null and !dispute.notes.isEmpty()}">
+                <div class="card-body">
+                    <h6 class="card-title">Notes</h6>
+                    <p class="mb-0" th:text="${dispute.notes}"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: actions -->
+        <div class="col-md-4">
+            <!-- Action form (non-terminal only) -->
+            <div class="card" th:if="${!isTerminal}">
+                <div class="card-body">
+                    <h6 class="card-title">Update Status</h6>
+                    <form th:action="@{/disputes/{id}/update(id=${dispute.id})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label small">New Status</label>
+                            <select class="form-select form-select-sm" name="status" required>
+                                <option value="">— select —</option>
+                                <option th:each="t : ${allowedTransitions}"
+                                        th:value="${t}" th:text="${t}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Notes</label>
+                            <textarea class="form-control form-control-sm" name="notes"
+                                      rows="3" placeholder="Optional notes..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            Update Dispute
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Terminal state message -->
+            <div class="card" th:if="${isTerminal}">
+                <div class="card-body text-center text-muted">
+                    <i class="bi bi-check-circle fs-3 d-block mb-2"
+                       th:classappend="${dispute.status.name() == 'WON' ? 'text-success' :
+                                        dispute.status.name() == 'LOST' ? 'text-danger' : 'text-secondary'}"></i>
+                    <div class="small">This dispute has been resolved as
+                        <strong th:text="${dispute.status}"></strong>.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Original transaction link -->
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6 class="card-title">Original Transaction</h6>
+                    <div class="small text-muted mb-1">Amount</div>
+                    <div th:text="|$${#numbers.formatDecimal(dispute.transaction.amount / 100.0, 1, 2)}|"></div>
+                    <div class="small text-muted mt-2 mb-1">Response Code</div>
+                    <div th:text="${dispute.transaction.responseCode}"></div>
+                    <div class="small text-muted mt-2 mb-1">Auth ID</div>
+                    <div th:text="${dispute.transaction.authId ?: '—'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

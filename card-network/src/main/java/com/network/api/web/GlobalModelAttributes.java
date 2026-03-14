@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
         FraudWebController.class,
         LoginController.class,
         TestLabWebController.class,
-        FeesWebController.class
+        FeesWebController.class,
+        DisputeWebController.class
 })
 public class GlobalModelAttributes {
 

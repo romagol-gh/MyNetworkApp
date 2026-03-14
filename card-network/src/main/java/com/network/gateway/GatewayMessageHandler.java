@@ -6,6 +6,7 @@ import com.network.iso8583.MessageFactory;
 import com.network.iso8583.MessageType;
 import com.network.iso8583.ResponseCode;
 import com.network.transaction.AuthorizationService;
+import com.network.transaction.ChargebackService;
 import com.network.transaction.FinancialService;
 import com.network.transaction.NetworkManagementService;
 import com.network.transaction.ReversalService;
@@ -34,6 +35,7 @@ public class GatewayMessageHandler extends ChannelInboundHandlerAdapter {
     private final AuthorizationService authorizationService;
     private final FinancialService financialService;
     private final ReversalService reversalService;
+    private final ChargebackService chargebackService;
 
     public GatewayMessageHandler(
             MessageFactory messageFactory,
@@ -42,7 +44,8 @@ public class GatewayMessageHandler extends ChannelInboundHandlerAdapter {
             NetworkManagementService networkMgmtService,
             AuthorizationService authorizationService,
             FinancialService financialService,
-            ReversalService reversalService) {
+            ReversalService reversalService,
+            @org.springframework.context.annotation.Lazy ChargebackService chargebackService) {
         this.messageFactory      = messageFactory;
         this.sessionRegistry     = sessionRegistry;
         this.pendingRequests     = pendingRequests;
@@ -50,6 +53,7 @@ public class GatewayMessageHandler extends ChannelInboundHandlerAdapter {
         this.authorizationService = authorizationService;
         this.financialService    = financialService;
         this.reversalService     = reversalService;
+        this.chargebackService   = chargebackService;
     }
 
     @Override
@@ -76,7 +80,14 @@ public class GatewayMessageHandler extends ChannelInboundHandlerAdapter {
         switch (mti) {
             case "0800" -> networkMgmtService.handle(msg, ctx.channel());
             case "0100" -> authorizationService.authorize(msg, ctx.channel());
-            case "0200" -> financialService.process(msg, ctx.channel());
+            case "0200" -> {
+                String pc = msg.get(Field.PROCESSING_CODE);
+                if (pc != null && pc.startsWith("28")) {
+                    chargebackService.processChargeback(msg, ctx.channel());
+                } else {
+                    financialService.process(msg, ctx.channel());
+                }
+            }
             case "0400" -> reversalService.reverse(msg, ctx.channel());
 
             // Responses from issuers — complete the pending future

@@ -2,7 +2,9 @@ package com.network.api.web;
 
 import com.network.domain.ClearingBatch;
 import com.network.gateway.SessionRegistry;
+import com.network.domain.Dispute;
 import com.network.repository.ClearingBatchRepository;
+import com.network.repository.DisputeRepository;
 import com.network.repository.FraudAlertRepository;
 import com.network.repository.InterchangeRateRepository;
 import com.network.repository.TransactionRepository;
@@ -13,27 +15,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class DashboardController {
 
-    private final TransactionRepository  transactionRepository;
-    private final FraudAlertRepository   fraudAlertRepository;
-    private final SessionRegistry        sessionRegistry;
+    private final TransactionRepository    transactionRepository;
+    private final FraudAlertRepository     fraudAlertRepository;
+    private final SessionRegistry          sessionRegistry;
     private final InterchangeRateRepository rateRepository;
-    private final ClearingBatchRepository   batchRepository;
+    private final ClearingBatchRepository  batchRepository;
+    private final DisputeRepository        disputeRepository;
 
     public DashboardController(TransactionRepository transactionRepository,
                                FraudAlertRepository fraudAlertRepository,
                                SessionRegistry sessionRegistry,
                                InterchangeRateRepository rateRepository,
-                               ClearingBatchRepository batchRepository) {
+                               ClearingBatchRepository batchRepository,
+                               DisputeRepository disputeRepository) {
         this.transactionRepository = transactionRepository;
         this.fraudAlertRepository  = fraudAlertRepository;
         this.sessionRegistry       = sessionRegistry;
         this.rateRepository        = rateRepository;
         this.batchRepository       = batchRepository;
+        this.disputeRepository     = disputeRepository;
     }
 
     @GetMapping
@@ -63,6 +69,11 @@ public class DashboardController {
         model.addAttribute("activeSessions", sessions);
         model.addAttribute("activeRates", activeRates);
         model.addAttribute("latestBatchFees", String.format("$%,.2f", latestBatchFees / 100.0));
+
+        long pendingDisputes = disputeRepository.countByStatusIn(List.of(
+                Dispute.Status.INITIATED, Dispute.Status.PENDING_ISSUER_RESPONSE,
+                Dispute.Status.ACCEPTED, Dispute.Status.REPRESENTMENT, Dispute.Status.ARBITRATION));
+        model.addAttribute("pendingDisputes", pendingDisputes);
 
         return "dashboard";
     }

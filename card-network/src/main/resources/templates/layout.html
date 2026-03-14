@@ -354,6 +354,12 @@
                         <i class="bi bi-currency-dollar"></i> Fees
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/disputes}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/disputes') ? 'active' : ''}">
+                        <i class="bi bi-exclamation-triangle"></i> Disputes
+                    </a>
+                </li>
 
                 <li class="sidebar-section">Fraud</li>
                 <li class="nav-item">

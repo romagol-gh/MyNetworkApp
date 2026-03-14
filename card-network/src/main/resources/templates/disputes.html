@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Disputes', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <!-- Filter bar -->
+    <div class="card mb-3">
+        <div class="card-body py-2 d-flex align-items-center gap-3 flex-wrap">
+            <span class="fw-semibold small">Filter:</span>
+            <a th:href="@{/disputes}" class="btn btn-sm"
+               th:classappend="${selectedStatus == null ? 'btn-primary' : 'btn-outline-secondary'}">All</a>
+            <th:block th:each="s : ${statuses}">
+                <a th:href="@{/disputes(status=${s})}" class="btn btn-sm"
+                   th:classappend="${selectedStatus == s.name() ? 'btn-primary' : 'btn-outline-secondary'}"
+                   th:text="${s}"></a>
+            </th:block>
+            <span class="ms-auto text-muted small">
+                <span th:text="${pendingCount}">0</span> pending
+            </span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Transaction</th>
+                    <th>Reason</th>
+                    <th>Network</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="d : ${disputes}">
+                    <td th:text="${#temporals.format(d.initiatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td>
+                        <span class="font-monospace small" th:text="${d.transaction.panMasked}"></span><br>
+                        <span class="text-muted small" th:text="${d.transaction.retrievalRef}"></span>
+                    </td>
+                    <td>
+                        <span class="fw-semibold" th:text="${d.reasonCode}"></span><br>
+                        <span class="text-muted small"
+                              th:text="${reasonDescriptions[d.reasonCode] ?: 'Unknown'}"></span>
+                    </td>
+                    <td th:text="${d.reasonNetwork}"></td>
+                    <td th:text="|$${#numbers.formatDecimal(d.chargebackAmount / 100.0, 1, 2)}|"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${d.status.name() == 'WON' ? 'bg-success' :
+                                              d.status.name() == 'LOST' ? 'bg-danger' :
+                                              d.status.name() == 'WITHDRAWN' ? 'bg-secondary' :
+                                              d.status.name() == 'ARBITRATION' ? 'bg-warning text-dark' :
+                                              d.status.name() == 'ACCEPTED' or d.status.name() == 'REPRESENTMENT' ? 'bg-primary' :
+                                              'bg-warning text-dark'}"
+                              th:text="${d.status}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/disputes/{id}(id=${d.id})}"
+                           class="btn btn-sm btn-outline-secondary">View</a>
+                    </td>
+                </tr>
+                <tr th:if="${disputes.isEmpty()}">
+                    <td colspan="7" class="text-center text-muted py-4">No disputes found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer d-flex justify-content-between align-items-center"
+             th:if="${disputes.totalPages > 1}">
+            <span class="text-muted small">
+                Page <span th:text="${disputes.number + 1}">1</span>
+                of <span th:text="${disputes.totalPages}">1</span>
+            </span>
+            <div class="d-flex gap-2">
+                <a th:if="${disputes.hasPrevious()}"
+                   th:href="@{/disputes(page=${disputes.number - 1}, status=${selectedStatus})}"
+                   class="btn btn-sm btn-outline-secondary">Previous</a>
+                <a th:if="${disputes.hasNext()}"
+                   th:href="@{/disputes(page=${disputes.number + 1}, status=${selectedStatus})}"
+                   class="btn btn-sm btn-outline-secondary">Next</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

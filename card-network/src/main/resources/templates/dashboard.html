@@ -51,6 +51,16 @@
                 <div class="stat-sub">most recent clearing</div>
             </div>
         </div>
+        <div class="col-md-2">
+            <a th:href="@{/disputes}" class="text-decoration-none">
+                <div class="stat-card danger">
+                    <i class="bi bi-exclamation-triangle stat-icon"></i>
+                    <div class="stat-label">Disputes</div>
+                    <div class="stat-value" th:text="${pendingDisputes}">0</div>
+                    <div class="stat-sub">pending resolution</div>
+                </div>
+            </a>
+        </div>
     </div>
 
     <!-- Test coverage banner -->
