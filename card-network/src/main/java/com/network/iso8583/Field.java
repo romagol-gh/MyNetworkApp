@@ -24,6 +24,7 @@ public final class Field {
     public static final int TERMINAL_ID            = 41;  // Card Acceptor Terminal ID
     public static final int MERCHANT_ID            = 42;  // Card Acceptor ID Code
     public static final int MERCHANT_NAME          = 43;  // Card Acceptor Name/Location
+    public static final int ADDITIONAL_DATA        = 48;  // Additional Data — Private (agent context)
     public static final int CURRENCY               = 49;  // Transaction Currency Code
     public static final int NETWORK_MGMT_CODE      = 70;  // Network Management Information Code
     public static final int REPLACEMENT_AMOUNTS    = 95;  // Replacement Amounts (reversals)

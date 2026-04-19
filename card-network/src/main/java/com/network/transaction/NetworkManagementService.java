@@ -18,6 +18,8 @@ import java.util.Optional;
  * Handles ISO 8583 Network Management messages (0800/0810):
  *   - NMC 001 = Sign-On
  *   - NMC 002 = Sign-Off
+ *   - NMC 080 = Agent Sign-On
+ *   - NMC 081 = Agent Sign-Off
  *   - NMC 301 = Echo Test
  */
 @Service
@@ -25,20 +27,25 @@ public class NetworkManagementService {
 
     private static final Logger log = LoggerFactory.getLogger(NetworkManagementService.class);
 
-    private static final String SIGN_ON  = "001";
-    private static final String SIGN_OFF = "002";
-    private static final String ECHO     = "301";
+    private static final String SIGN_ON       = "001";
+    private static final String SIGN_OFF      = "002";
+    private static final String AGENT_SIGN_ON  = "080";
+    private static final String AGENT_SIGN_OFF = "081";
+    private static final String ECHO          = "301";
 
     private final MessageFactory messageFactory;
     private final SessionRegistry sessionRegistry;
     private final ParticipantRepository participantRepository;
+    private final AgentRegistrationService agentRegistrationService;
 
     public NetworkManagementService(MessageFactory messageFactory,
                                     SessionRegistry sessionRegistry,
-                                    ParticipantRepository participantRepository) {
-        this.messageFactory       = messageFactory;
-        this.sessionRegistry      = sessionRegistry;
-        this.participantRepository = participantRepository;
+                                    ParticipantRepository participantRepository,
+                                    AgentRegistrationService agentRegistrationService) {
+        this.messageFactory           = messageFactory;
+        this.sessionRegistry          = sessionRegistry;
+        this.participantRepository     = participantRepository;
+        this.agentRegistrationService  = agentRegistrationService;
     }
 
     public void handle(IsoMessage msg, Channel channel) {
@@ -46,6 +53,15 @@ public class NetworkManagementService {
         String acquirerCode = msg.getAcquirerCode();
 
         log.info("NMC={} from acquirerCode={}", nmc, acquirerCode);
+
+        if (AGENT_SIGN_ON.equals(nmc)) {
+            agentRegistrationService.processSignOn(msg, channel);
+            return;
+        }
+        if (AGENT_SIGN_OFF.equals(nmc)) {
+            agentRegistrationService.processSignOff(msg, channel);
+            return;
+        }
 
         IsoMessage resp;
         if (SIGN_ON.equals(nmc)) {

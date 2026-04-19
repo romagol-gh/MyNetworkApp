@@ -73,6 +73,15 @@ public class Transaction {
     @Column(length = 4)
     private String mcc; // DE18
 
+    @Column(length = 16)
+    private String agentId;
+
+    @Column(length = 64)
+    private String intentHash;
+
+    @Column(columnDefinition = "TEXT")
+    private String agentChain;
+
     public UUID getId() { return id; }
     public String getStan() { return stan; }
     public void setStan(String stan) { this.stan = stan; }
@@ -109,4 +118,10 @@ public class Transaction {
     public void setClearingBatch(ClearingBatch clearingBatch) { this.clearingBatch = clearingBatch; }
     public String getMcc() { return mcc; }
     public void setMcc(String mcc) { this.mcc = mcc; }
+    public String getAgentId() { return agentId; }
+    public void setAgentId(String agentId) { this.agentId = agentId; }
+    public String getIntentHash() { return intentHash; }
+    public void setIntentHash(String intentHash) { this.intentHash = intentHash; }
+    public String getAgentChain() { return agentChain; }
+    public void setAgentChain(String agentChain) { this.agentChain = agentChain; }
 }

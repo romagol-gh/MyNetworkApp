@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
         LoginController.class,
         TestLabWebController.class,
         FeesWebController.class,
-        DisputeWebController.class
+        DisputeWebController.class,
+        AgentWebController.class
 })
 public class GlobalModelAttributes {
 

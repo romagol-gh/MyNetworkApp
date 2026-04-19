@@ -39,4 +39,17 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.status = 'APPROVED' AND t.transmittedAt >= :from AND t.transmittedAt < :to")
     long sumApprovedAmountByPeriod(@Param("from") Instant from, @Param("to") Instant to);
+
+    long countByAgentIdAndTransmittedAtAfter(String agentId, Instant since);
+
+    List<Transaction> findTop20ByAgentIdOrderByTransmittedAtDesc(String agentId);
+
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.agentId IS NOT NULL AND t.transmittedAt >= :since")
+    long countAgentTransactionsSince(@Param("since") Instant since);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.agentId IS NOT NULL AND t.status = 'APPROVED' AND t.transmittedAt >= :since")
+    long sumAgentApprovedAmountSince(@Param("since") Instant since);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t WHERE t.agentId = :agentId AND t.status = 'APPROVED' AND t.transmittedAt >= :since")
+    long sumApprovedAmountByAgentIdSince(@Param("agentId") String agentId, @Param("since") Instant since);
 }

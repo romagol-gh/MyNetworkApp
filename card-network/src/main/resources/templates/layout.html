@@ -360,6 +360,12 @@
                         <i class="bi bi-exclamation-triangle"></i> Disputes
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/agents}"
+                       th:classappend="${currentUri != null and currentUri.startsWith('/agents') ? 'active' : ''}">
+                        <i class="bi bi-robot"></i> Agents
+                    </a>
+                </li>
 
                 <li class="sidebar-section">Fraud</li>
                 <li class="nav-item">

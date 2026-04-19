@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Agents', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <!-- Stats row -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card success">
+                <i class="bi bi-robot stat-icon"></i>
+                <div class="stat-label">Active Agents</div>
+                <div class="stat-value" th:text="${activeCount}">0</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card primary">
+                <i class="bi bi-lightning stat-icon"></i>
+                <div class="stat-label">Agent Txns Today</div>
+                <div class="stat-value" th:text="${agentTxnsToday}">0</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card cyan">
+                <i class="bi bi-currency-dollar stat-icon"></i>
+                <div class="stat-label">Agent Volume Today</div>
+                <div class="stat-value" th:text="${agentVolumeToday}">$0.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="card mb-3">
+        <div class="card-body py-2 d-flex align-items-center gap-3 flex-wrap">
+            <span class="fw-semibold small">Filter:</span>
+            <a th:href="@{/agents}" class="btn btn-sm"
+               th:classappend="${selectedStatus == null ? 'btn-primary' : 'btn-outline-secondary'}">All</a>
+            <th:block th:each="s : ${statuses}">
+                <a th:href="@{/agents(status=${s})}" class="btn btn-sm"
+                   th:classappend="${selectedStatus == s.name() ? 'btn-primary' : 'btn-outline-secondary'}"
+                   th:text="${s}"></a>
+            </th:block>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Agent ID</th>
+                    <th>Participant</th>
+                    <th>MCC Scope</th>
+                    <th>Per-Txn Limit</th>
+                    <th>Daily Limit</th>
+                    <th>Status</th>
+                    <th>Last Seen</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="a : ${agents}">
+                    <td class="font-monospace fw-semibold" th:text="${a.agentId}"></td>
+                    <td th:text="${a.participant?.name}"></td>
+                    <td>
+                        <span class="text-muted small" th:text="${a.mccScope ?: '—'}"></span>
+                    </td>
+                    <td th:text="${a.perTxnLimit != null ? '$' + #numbers.formatDecimal(a.perTxnLimit / 100.0, 1, 2) : '—'}"></td>
+                    <td th:text="${a.dailyLimit != null ? '$' + #numbers.formatDecimal(a.dailyLimit / 100.0, 1, 2) : '—'}"></td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${a.status.name() == 'ACTIVE' ? 'bg-success' :
+                                              a.status.name() == 'SUSPENDED' ? 'bg-danger' : 'bg-secondary'}"
+                              th:text="${a.status}"></span>
+                    </td>
+                    <td class="text-muted small"
+                        th:text="${a.lastSeenAt != null ? #temporals.format(a.lastSeenAt, 'yyyy-MM-dd HH:mm') : '—'}"></td>
+                    <td>
+                        <a th:href="@{/agents/{id}(id=${a.agentId})}"
+                           class="btn btn-sm btn-outline-secondary">View</a>
+                    </td>
+                </tr>
+                <tr th:if="${agents.isEmpty()}">
+                    <td colspan="8" class="text-center text-muted py-4">No agents registered.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer d-flex justify-content-between align-items-center"
+             th:if="${agents.totalPages > 1}">
+            <span class="text-muted small">
+                Page <span th:text="${agents.number + 1}">1</span>
+                of <span th:text="${agents.totalPages}">1</span>
+            </span>
+            <div class="d-flex gap-2">
+                <a th:if="${agents.hasPrevious()}"
+                   th:href="@{/agents(page=${agents.number - 1}, status=${selectedStatus})}"
+                   class="btn btn-sm btn-outline-secondary">Previous</a>
+                <a th:if="${agents.hasNext()}"
+                   th:href="@{/agents(page=${agents.number + 1}, status=${selectedStatus})}"
+                   class="btn btn-sm btn-outline-secondary">Next</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

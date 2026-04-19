@@ -24,6 +24,12 @@ public class TransactionLogger {
 
     @Transactional
     public Transaction logIncoming(IsoMessage msg, Participant acquirer, Participant issuer) {
+        return logIncoming(msg, acquirer, issuer, null);
+    }
+
+    @Transactional
+    public Transaction logIncoming(IsoMessage msg, Participant acquirer, Participant issuer,
+                                   AgentContext agentCtx) {
         Transaction txn = new Transaction();
         txn.setStan(msg.getStan());
         txn.setRetrievalRef(msg.get(Field.RETRIEVAL_REF));
@@ -36,6 +42,11 @@ public class TransactionLogger {
         txn.setIssuer(issuer);
         txn.setMcc(msg.get(Field.MCC));
         txn.setStatus(Transaction.Status.PENDING);
+        if (agentCtx != null) {
+            txn.setAgentId(agentCtx.getAgentId());
+            txn.setIntentHash(agentCtx.getIntentHash());
+            txn.setAgentChain(agentCtx.getAgentChain());
+        }
         return transactionRepository.save(txn);
     }
 

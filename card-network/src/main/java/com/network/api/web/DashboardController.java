@@ -1,8 +1,10 @@
 package com.network.api.web;
 
+import com.network.domain.AgentRegistration;
 import com.network.domain.ClearingBatch;
 import com.network.gateway.SessionRegistry;
 import com.network.domain.Dispute;
+import com.network.repository.AgentRegistrationRepository;
 import com.network.repository.ClearingBatchRepository;
 import com.network.repository.DisputeRepository;
 import com.network.repository.FraudAlertRepository;
@@ -21,25 +23,28 @@ import java.util.List;
 @RequestMapping("/")
 public class DashboardController {
 
-    private final TransactionRepository    transactionRepository;
-    private final FraudAlertRepository     fraudAlertRepository;
-    private final SessionRegistry          sessionRegistry;
+    private final TransactionRepository     transactionRepository;
+    private final FraudAlertRepository      fraudAlertRepository;
+    private final SessionRegistry           sessionRegistry;
     private final InterchangeRateRepository rateRepository;
-    private final ClearingBatchRepository  batchRepository;
-    private final DisputeRepository        disputeRepository;
+    private final ClearingBatchRepository   batchRepository;
+    private final DisputeRepository         disputeRepository;
+    private final AgentRegistrationRepository agentRepository;
 
     public DashboardController(TransactionRepository transactionRepository,
                                FraudAlertRepository fraudAlertRepository,
                                SessionRegistry sessionRegistry,
                                InterchangeRateRepository rateRepository,
                                ClearingBatchRepository batchRepository,
-                               DisputeRepository disputeRepository) {
+                               DisputeRepository disputeRepository,
+                               AgentRegistrationRepository agentRepository) {
         this.transactionRepository = transactionRepository;
         this.fraudAlertRepository  = fraudAlertRepository;
         this.sessionRegistry       = sessionRegistry;
         this.rateRepository        = rateRepository;
         this.batchRepository       = batchRepository;
         this.disputeRepository     = disputeRepository;
+        this.agentRepository       = agentRepository;
     }
 
     @GetMapping
@@ -74,6 +79,11 @@ public class DashboardController {
                 Dispute.Status.INITIATED, Dispute.Status.PENDING_ISSUER_RESPONSE,
                 Dispute.Status.ACCEPTED, Dispute.Status.REPRESENTMENT, Dispute.Status.ARBITRATION));
         model.addAttribute("pendingDisputes", pendingDisputes);
+
+        model.addAttribute("activeAgents",    agentRepository.countByStatus(AgentRegistration.Status.ACTIVE));
+        model.addAttribute("agentTxnsToday",  transactionRepository.countAgentTransactionsSince(dayStart));
+        model.addAttribute("agentVolumeToday",
+                String.format("$%,.2f", transactionRepository.sumAgentApprovedAmountSince(dayStart) / 100.0));
 
         return "dashboard";
     }

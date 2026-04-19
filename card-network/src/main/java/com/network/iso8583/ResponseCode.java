@@ -18,7 +18,9 @@ public final class ResponseCode {
     public static final String NO_CHECKING_ACCOUNT        = "52";
     public static final String EXPIRED_CARD               = "54";
     public static final String INCORRECT_PIN              = "55";
+    public static final String TRANSACTION_NOT_PERMITTED  = "57";  // MCC scope / agent scope
     public static final String SUSPECTED_FRAUD            = "59";
+    public static final String EXCEEDS_AMOUNT_LIMIT       = "61";  // per-txn or daily cap exceeded
     public static final String CARD_ACCEPTOR_CONTACT_ISSUER = "62";
     public static final String SECURITY_VIOLATION         = "63";
     public static final String EXCEEDS_WITHDRAWAL_LIMIT   = "65";

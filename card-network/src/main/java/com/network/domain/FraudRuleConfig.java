@@ -8,7 +8,8 @@ import java.util.UUID;
 @Table(name = "fraud_rule_configs")
 public class FraudRuleConfig {
 
-    public enum RuleType { VELOCITY, AMOUNT_LIMIT, BLACKLIST, DECLINE_VELOCITY, MCC }
+    public enum RuleType { VELOCITY, AMOUNT_LIMIT, BLACKLIST, DECLINE_VELOCITY, MCC,
+                           AGENT_VELOCITY, AGENT_SCOPE, AGENT_CHAIN }
     public enum Action   { FLAG, DECLINE }
 
     @Id

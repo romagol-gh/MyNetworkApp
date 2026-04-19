@@ -63,6 +63,41 @@
         </div>
     </div>
 
+    <!-- Agent Commerce row -->
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="stat-label mb-2" style="font-size:.7rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.1em;">
+                <i class="bi bi-robot me-1"></i> Agent Commerce
+            </div>
+        </div>
+        <div class="col-md-4">
+            <a th:href="@{/agents}" class="text-decoration-none">
+                <div class="stat-card success">
+                    <i class="bi bi-robot stat-icon"></i>
+                    <div class="stat-label">Active Agents</div>
+                    <div class="stat-value" th:text="${activeAgents}">0</div>
+                    <div class="stat-sub">registered &amp; signed on</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card primary">
+                <i class="bi bi-lightning stat-icon"></i>
+                <div class="stat-label">Agent Txns Today</div>
+                <div class="stat-value" th:text="${agentTxnsToday}">0</div>
+                <div class="stat-sub">agentic commerce requests</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card cyan">
+                <i class="bi bi-currency-dollar stat-icon"></i>
+                <div class="stat-label">Agent Volume Today</div>
+                <div class="stat-value" th:text="${agentVolumeToday}">$0.00</div>
+                <div class="stat-sub">approved agent payments</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Test coverage banner -->
     <div class="row g-3 mb-4">
         <div class="col-12">

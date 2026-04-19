@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Agent Detail', ~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="/agents" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Agents
+        </a>
+        <span class="badge fs-6"
+              th:classappend="${agent.status.name() == 'ACTIVE' ? 'bg-success' :
+                              agent.status.name() == 'SUSPENDED' ? 'bg-danger' : 'bg-secondary'}"
+              th:text="${agent.status}"></span>
+    </div>
+
+    <!-- Agent summary card -->
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-robot me-2"></i> Agent <span th:text="${agent.agentId}"></span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="stat-label">Agent ID</div>
+                    <div class="font-monospace fw-bold" th:text="${agent.agentId}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-label">Participant</div>
+                    <div th:text="${agent.participant?.name}">—</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-label">Registered</div>
+                    <div th:text="${#temporals.format(agent.registeredAt, 'yyyy-MM-dd HH:mm')}">—</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-label">Expires</div>
+                    <div th:text="${agent.expiresAt != null ? #temporals.format(agent.expiresAt, 'yyyy-MM-dd') : 'Never'}">—</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spend controls card -->
+    <div class="card mb-4">
+        <div class="card-header fw-semibold">Spend Controls</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="stat-label">Per-Txn Limit</div>
+                    <div th:text="${agent.perTxnLimit != null ? '$' + #numbers.formatDecimal(agent.perTxnLimit / 100.0, 1, 2) : 'None'}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-label">Daily Limit</div>
+                    <div th:text="${agent.dailyLimit != null ? '$' + #numbers.formatDecimal(agent.dailyLimit / 100.0, 1, 2) : 'None'}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-label">MCC Scope</div>
+                    <div>
+                        <th:block th:if="${agent.mccScope != null}">
+                            <th:block th:each="mcc, i : ${#strings.arraySplit(agent.mccScope, ',')}">
+                                <span class="badge bg-secondary me-1" th:text="${mcc}"></span>
+                            </th:block>
+                        </th:block>
+                        <span th:unless="${agent.mccScope != null}" class="text-muted">All MCCs</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-label">Time Window</div>
+                    <div th:text="${agent.timeWindow ?: 'No restriction'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card primary">
+                <i class="bi bi-lightning stat-icon"></i>
+                <div class="stat-label">Txns Today</div>
+                <div class="stat-value" th:text="${txnsToday}">0</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card cyan">
+                <i class="bi bi-currency-dollar stat-icon"></i>
+                <div class="stat-label">Volume Today</div>
+                <div class="stat-value" th:text="${volumeToday}">$0.00</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card success">
+                <i class="bi bi-clock-history stat-icon"></i>
+                <div class="stat-label">Last Seen</div>
+                <div class="stat-value small"
+                     th:text="${agent.lastSeenAt != null ? #temporals.format(agent.lastSeenAt, 'HH:mm') : '—'}"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent transactions -->
+    <div class="card">
+        <div class="card-header fw-semibold">Recent Transactions (last 20)</div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>Time</th>
+                    <th>Amount</th>
+                    <th>MCC</th>
+                    <th>Intent Hash</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${recentTxns}">
+                    <td class="text-muted small" th:text="${#temporals.format(t.transmittedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${t.amount != null ? '$' + #numbers.formatDecimal(t.amount / 100.0, 1, 2) : '—'}"></td>
+                    <td th:text="${t.mcc ?: '—'}"></td>
+                    <td>
+                        <span class="font-monospace small text-muted"
+                              th:text="${t.intentHash != null ? #strings.abbreviate(t.intentHash, 16) : '—'}"></span>
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${t.status.name() == 'APPROVED' ? 'bg-success' :
+                                              t.status.name() == 'DECLINED' ? 'bg-danger' : 'bg-secondary'}"
+                              th:text="${t.status}"></span>
+                    </td>
+                </tr>
+                <tr th:if="${recentTxns.isEmpty()}">
+                    <td colspan="5" class="text-center text-muted py-4">No transactions found for this agent.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

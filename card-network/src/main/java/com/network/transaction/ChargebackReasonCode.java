@@ -129,6 +129,12 @@ public final class ChargebackReasonCode {
         DESCRIPTIONS.put(MC_4870, "Chip Liability Shift");
         DESCRIPTIONS.put(MC_4871, "Chip / PIN Liability Shift");
         DESCRIPTIONS.put(MC_4999, "Domestic Chargeback Dispute");
+
+        // Agent-specific codes
+        DESCRIPTIONS.put("AGT-001", "Unauthorized Agent Transaction");
+        DESCRIPTIONS.put("AGT-002", "Agent Scope Exceeded");
+        DESCRIPTIONS.put("AGT-003", "Agent Intent Mismatch");
+        DESCRIPTIONS.put("AGT-004", "Revoked Agent Credentials");
     }
 
     public static String describe(String code) {

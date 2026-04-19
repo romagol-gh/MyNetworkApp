@@ -37,13 +37,14 @@ public class AuthorizationService {
     @Value("${gateway.response-timeout:30000}")
     private long responseTimeoutMs;
 
-    private final MessageFactory       messageFactory;
-    private final BinRouter            binRouter;
-    private final ParticipantConnector participantConnector;
-    private final PendingRequests      pendingRequests;
-    private final ParticipantRepository participantRepository;
-    private final TransactionLogger    transactionLogger;
-    private final FraudDetectionService fraudDetectionService;
+    private final MessageFactory           messageFactory;
+    private final BinRouter                binRouter;
+    private final ParticipantConnector     participantConnector;
+    private final PendingRequests          pendingRequests;
+    private final ParticipantRepository    participantRepository;
+    private final TransactionLogger        transactionLogger;
+    private final FraudDetectionService    fraudDetectionService;
+    private final AgentRegistrationService agentRegistrationService;
 
     public AuthorizationService(
             MessageFactory messageFactory,
@@ -52,14 +53,16 @@ public class AuthorizationService {
             PendingRequests pendingRequests,
             ParticipantRepository participantRepository,
             TransactionLogger transactionLogger,
-            FraudDetectionService fraudDetectionService) {
-        this.messageFactory       = messageFactory;
-        this.binRouter            = binRouter;
-        this.participantConnector = participantConnector;
-        this.pendingRequests      = pendingRequests;
-        this.participantRepository = participantRepository;
-        this.transactionLogger    = transactionLogger;
-        this.fraudDetectionService = fraudDetectionService;
+            FraudDetectionService fraudDetectionService,
+            AgentRegistrationService agentRegistrationService) {
+        this.messageFactory           = messageFactory;
+        this.binRouter                = binRouter;
+        this.participantConnector     = participantConnector;
+        this.pendingRequests          = pendingRequests;
+        this.participantRepository    = participantRepository;
+        this.transactionLogger        = transactionLogger;
+        this.fraudDetectionService    = fraudDetectionService;
+        this.agentRegistrationService = agentRegistrationService;
     }
 
     public void authorize(IsoMessage request, Channel acquirerChannel) {
@@ -91,11 +94,31 @@ public class AuthorizationService {
         }
         Participant issuer = issuerOpt.get();
 
+        // Parse DE48 agent context (if present)
+        AgentContext agentCtx = null;
+        String de48 = request.get(Field.ADDITIONAL_DATA);
+        if (de48 != null && !de48.isBlank()) {
+            agentCtx = AgentContext.parse(de48);
+        }
+
+        // Agent spend controls — enforce before fraud check; short-circuit if violated
+        if (agentCtx != null) {
+            long amount = parseAmountLong(request.getAmount());
+            String mcc  = request.getMcc();
+            try {
+                agentRegistrationService.checkSpendControls(agentCtx, amount, mcc);
+            } catch (SpendControlException e) {
+                log.info("Agent spend control rejected STAN={}: {}", stan, e.getMessage());
+                sendError(acquirerChannel, request, e.getResponseCode());
+                return;
+            }
+        }
+
         // Fraud check — before touching the issuer
         FraudResult fraudResult = fraudDetectionService.evaluate(request);
         if (fraudResult.action() == FraudAction.DECLINE) {
             log.info("Transaction DECLINED by fraud engine: score={}, rules={}", fraudResult.score(), fraudResult.triggeredRuleNames());
-            Transaction txn = transactionLogger.logIncoming(request, acquirer, issuer);
+            Transaction txn = transactionLogger.logIncoming(request, acquirer, issuer, agentCtx);
             txn.setFraudFlagged(true);
             txn.setStatus(Transaction.Status.DECLINED);
             transactionLogger.logResponse(txn, messageFactory.buildResponse(request, ResponseCode.SUSPECTED_FRAUD));
@@ -105,7 +128,7 @@ public class AuthorizationService {
         }
 
         // Log the incoming transaction
-        Transaction txn = transactionLogger.logIncoming(request, acquirer, issuer);
+        Transaction txn = transactionLogger.logIncoming(request, acquirer, issuer, agentCtx);
         if (fraudResult.action() == FraudAction.FLAG) {
             txn.setFraudFlagged(true);
         }
@@ -137,10 +160,21 @@ public class AuthorizationService {
                 response.set(Field.AUTH_ID_RESPONSE, generateAuthId());
             }
 
+            // Echo DE48 agent context back to acquirer
+            if (de48 != null && !de48.isBlank()) {
+                response.set(Field.ADDITIONAL_DATA, de48);
+            }
+
             transactionLogger.logResponse(txn, response);
 
             if (fraudResult.action() == FraudAction.FLAG) {
                 fraudDetectionService.createAlert(txn, fraudResult);
+            }
+
+            // Record agent activity for daily limit tracking
+            if (agentCtx != null && agentCtx.getAgentId() != null
+                    && ResponseCode.APPROVED.equals(response.getResponseCode())) {
+                agentRegistrationService.recordActivity(agentCtx.getAgentId(), parseAmountLong(request.getAmount()));
             }
 
             acquirerChannel.writeAndFlush(messageFactory.pack(response));
@@ -175,5 +209,10 @@ public class AuthorizationService {
 
     private String generateAuthId() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
+    }
+
+    private long parseAmountLong(String amount) {
+        if (amount == null || amount.isBlank()) return 0L;
+        try { return Long.parseLong(amount.trim()); } catch (NumberFormatException e) { return 0L; }
     }
 }
