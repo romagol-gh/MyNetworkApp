@@ -35,11 +35,13 @@
   .lbl-red    { background: #450a0a; color: #f87171; }
   .lbl-gray   { background: #1e293b; color: #94a3b8; }
   .lbl-cyan   { background: #083344; color: #22d3ee; }
+  .lbl-agent  { background: #1a2744; color: #a78bfa; border: 1px solid #4f46e5; }
 
   /* ── Grid layouts ── */
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
   .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
 
   /* ── Cards ── */
   .card { background: #111827; border: 1px solid #1e2d3d; border-radius: 10px;
@@ -50,6 +52,7 @@
   .card.accent-red    { border-color: #991b1b; }
   .card.accent-purple { border-color: #581c87; }
   .card.accent-cyan   { border-color: #0e7490; }
+  .card.accent-agent  { border-color: #4f46e5; background: #0f0f1e; }
 
   .card-icon { font-size: 2rem; margin-bottom: 14px; }
   .card h3   { color: #fff; text-transform: none; letter-spacing: 0; font-size: 1rem;
@@ -66,6 +69,7 @@
   .purple { color: #c084fc; }
   .red    { color: #f87171; }
   .cyan   { color: #22d3ee; }
+  .agent  { color: #a78bfa; }
 
   /* ── Flow diagram ── */
   .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 20px 0; }
@@ -75,6 +79,8 @@
   .flow-box.hl { border-color: #1e40af; color: #38bdf8; }
   .flow-box.fraud { border-color: #92400e; color: #fb923c; }
   .flow-box.fee { border-color: #0e7490; color: #22d3ee; }
+  .flow-box.agent { border-color: #4f46e5; color: #a78bfa; }
+  .flow-box.spend { border-color: #92400e; color: #fb923c; background: #1a0a00; }
 
   /* ── Table ── */
   table { width: 100%; border-collapse: collapse; font-size: .875rem; }
@@ -91,6 +97,7 @@
   .badge-blue   { background: #1e3a5f; color: #38bdf8; }
   .badge-purple { background: #3b0764; color: #c084fc; }
   .badge-cyan   { background: #083344; color: #22d3ee; }
+  .badge-agent  { background: #1a1560; color: #a78bfa; }
 
   /* ── List ── */
   ul.clean { list-style: none; }
@@ -130,9 +137,11 @@
   /* ── Mono box ── */
   .mono { font-family: monospace; background: #0a0f1a; padding: 14px 16px;
           border-radius: 6px; color: #94a3b8; font-size: .82rem; line-height: 1.8; }
-  .mono .hi-green { color: #4ade80; font-weight: 700; }
-  .mono .hi-cyan  { color: #22d3ee; }
-  .mono .hi-red   { color: #f87171; }
+  .mono .hi-green  { color: #4ade80; font-weight: 700; }
+  .mono .hi-cyan   { color: #22d3ee; }
+  .mono .hi-red    { color: #f87171; }
+  .mono .hi-agent  { color: #a78bfa; font-weight: 700; }
+  .mono .hi-orange { color: #fb923c; }
 
   /* ── Footer ── */
   footer { background: #0a0f1a; text-align: center; padding: 32px;
@@ -177,7 +186,7 @@
 
     /* Keep content blocks together — never split across pages */
     .card, table, .flow, .arch, .arch-col, .arch-box,
-    .gap-item, .kpi, .mono, .grid-2, .grid-3, .grid-4 {
+    .gap-item, .kpi, .mono, .grid-2, .grid-3, .grid-4, .grid-5 {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
@@ -186,6 +195,7 @@
     .grid-2 { gap: 12px !important; }
     .grid-3 { gap: 10px !important; }
     .grid-4 { gap: 10px !important; }
+    .grid-5 { gap: 8px !important; }
     .card { padding: 12px 16px !important; }
     .card-icon { font-size: 1.4rem !important; margin-bottom: 8px !important; }
     .card p { font-size: .78rem !important; }
@@ -212,19 +222,24 @@
      SLIDE 1 — COVER
 ════════════════════════════════════════════════════════ -->
 <div class="slide cover">
-  <div style="max-width:780px;">
-    <div class="section-label lbl-blue" style="margin-bottom:28px;">CONFIDENTIAL  •  MARCH 2026</div>
+  <div style="max-width:860px;">
+    <div class="section-label lbl-blue" style="margin-bottom:28px;">CONFIDENTIAL  •  APRIL 2026</div>
     <h1 style="font-size:3.5rem; margin-bottom:16px;">
       <span class="blue">Card</span> Network
     </h1>
     <p class="subtitle">ISO 8583 Payment Network — Capability Overview</p>
-    <p class="tagline">Real-time authorization · Fraud detection · Interchange pricing · Clearing &amp; Settlement</p>
+    <p class="tagline">Real-time authorization · Fraud detection · Interchange pricing · Clearing &amp; Settlement · <span style="color:#a78bfa;">Native Agentic Commerce</span></p>
     <div class="divider" style="margin:40px auto; max-width:200px;"></div>
-    <div class="grid-4" style="max-width:680px; margin:0 auto; gap:32px;">
+    <div class="grid-5" style="max-width:820px; margin:0 auto; gap:28px;">
       <div class="kpi"><span class="num blue">4</span><span class="lbl">Message Types</span></div>
-      <div class="kpi"><span class="num green">5</span><span class="lbl">Fraud Rules</span></div>
+      <div class="kpi"><span class="num orange">8</span><span class="lbl">Fraud Rules</span></div>
       <div class="kpi"><span class="num cyan">7</span><span class="lbl">Fee Rate Rules</span></div>
-      <div class="kpi"><span class="num orange">70</span><span class="lbl">Tests Passing</span></div>
+      <div class="kpi"><span class="num green">75</span><span class="lbl">Tests Passing</span></div>
+      <div class="kpi">
+        <span class="num agent" style="font-size:2rem; letter-spacing:-1px;">080/081</span>
+        <span class="lbl" style="color:#a78bfa; display:block;">Agent Sign-On/Off</span>
+        <span style="font-size:.65rem; color:#64748b; display:block; margin-top:4px; line-height:1.4;">Agents register natively<br/>over ISO 8583 — no HTTP overlay</span>
+      </div>
     </div>
   </div>
 </div>
@@ -233,17 +248,18 @@
      SLIDE 2 — WHAT WE BUILT
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">2 / 13</span>
+  <span class="slide-num">2 / 15</span>
   <div class="section-label lbl-blue">OVERVIEW</div>
   <h2>What Is This?</h2>
-  <p style="font-size:1.05rem; max-width:820px; color:#cbd5e1; margin-bottom:36px;">
+  <p style="font-size:1.05rem; max-width:900px; color:#cbd5e1; margin-bottom:28px;">
     A fully functional, production-grade <strong style="color:#fff;">ISO 8583 payment switch</strong>
     — the same protocol used by Visa, Mastercard, and every major card network.
     It accepts TCP connections from acquirer banks, routes authorization requests to issuer banks,
     applies real-time fraud scoring, runs end-of-day clearing and settlement,
-    and calculates <strong style="color:#22d3ee;">interchange and network fees</strong> per transaction.
+    calculates <strong style="color:#22d3ee;">interchange and network fees</strong> per transaction,
+    and natively supports <strong style="color:#a78bfa;">AI agent payments</strong> embedded in the ISO 8583 wire protocol.
   </p>
-  <div class="grid-3" style="margin-bottom:20px;">
+  <div class="grid-4" style="margin-bottom:16px;">
     <div class="card accent-blue">
       <div class="card-icon">⚡</div>
       <h3>Real-time Switch</h3>
@@ -253,8 +269,14 @@
     <div class="card accent-orange">
       <div class="card-icon">🛡</div>
       <h3>Fraud Engine</h3>
-      <p>5 configurable fraud rules with score-based aggregation.
+      <p>8 configurable fraud rules with score-based aggregation — including 3 agent-aware rules.
          Decisions in &lt;1ms, before any issuer contact.</p>
+    </div>
+    <div class="card accent-agent">
+      <div class="card-icon">🤖</div>
+      <h3>Agentic Commerce</h3>
+      <p>AI agents sign on via ISO 8583 NMC 080/081. Spend controls, MCC scope, intent hash,
+         and multi-agent chain auth are carried natively in DE48 — no HTTP overlay needed.</p>
     </div>
     <div class="card accent-cyan">
       <div class="card-icon">💱</div>
@@ -274,7 +296,7 @@
       <div class="card-icon">📊</div>
       <h3>Operations Dashboard</h3>
       <p>Browser-based admin UI with live transaction monitoring,
-         fraud alert review queue, fee schedule management, and manual clearing controls.</p>
+         fraud alert review queue, fee schedule management, agent registry, and manual clearing controls.</p>
     </div>
     <div class="card">
       <div class="card-icon">☁️</div>
@@ -289,7 +311,7 @@
      SLIDE 3 — TRANSACTION FLOW
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">3 / 13</span>
+  <span class="slide-num">3 / 15</span>
   <div class="section-label lbl-blue">CORE PROTOCOL</div>
   <h2>ISO 8583 Transaction Flow</h2>
 
@@ -297,15 +319,15 @@
   <div class="flow" style="margin-bottom:28px;">
     <div class="flow-box">Acquirer Bank</div>
     <div class="flow-arrow">→</div>
-    <div class="flow-box hl">0100 Request<br/><span style="font-size:.75rem; color:#64748b;">PAN · Amount · MCC · STAN</span></div>
+    <div class="flow-box hl">0100 Request<br/><span style="font-size:.75rem; color:#64748b;">PAN · Amount · MCC · DE48</span></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box agent">Spend Controls<br/><span style="font-size:.75rem; color:#64748b;">DE48 Agent Check</span></div>
     <div class="flow-arrow">→</div>
     <div class="flow-box fraud">Fraud Engine<br/><span style="font-size:.75rem; color:#64748b;">Score · Decide</span></div>
     <div class="flow-arrow">→</div>
     <div class="flow-box">BIN Router<br/><span style="font-size:.75rem; color:#64748b;">PAN → Issuer</span></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-box hl">Issuer Bank<br/><span style="font-size:.75rem; color:#64748b;">0100 forwarded</span></div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box hl">0110 Response<br/><span style="font-size:.75rem; color:#64748b;">RC · Auth ID</span></div>
+    <div class="flow-box hl">0110 Response<br/><span style="font-size:.75rem; color:#64748b;">RC · Auth ID · DE48 echo</span></div>
     <div class="flow-arrow">→</div>
     <div class="flow-box">Acquirer Bank</div>
   </div>
@@ -320,7 +342,7 @@
     <div class="flow-arrow">→</div>
     <div class="flow-box hl">SettlementEngine<br/><span style="font-size:.75rem; color:#64748b;">net positions</span></div>
     <div class="flow-arrow">→</div>
-    <div class="flow-box">SettlementRecords<br/><span style="font-size:.75rem; color:#64748b;">with fee breakdown</span></div>
+    <div class="flow-box">SettlementRecords<br/><span style="font-size:.75rem; color:#64748b;">fee breakdown + intent_hash</span></div>
   </div>
 
   <div class="grid-4" style="margin-bottom:28px;">
@@ -336,9 +358,9 @@
       <h3>0400 / 0420</h3>
       <p style="font-size:.8rem;">Reversal<br/>Request &amp; Advice<br/><span class="badge badge-green">implemented</span></p>
     </div>
-    <div class="card">
+    <div class="card" style="border-color:#4f46e5;">
       <h3>0800 / 0810</h3>
-      <p style="font-size:.8rem;">Network Mgmt<br/>Sign-on · Echo<br/><span class="badge badge-green">implemented</span></p>
+      <p style="font-size:.8rem;">Network Mgmt<br/>Sign-on · Echo · <span style="color:#a78bfa;">Agent NMC 080/081</span><br/><span class="badge badge-green">implemented</span></p>
     </div>
   </div>
 
@@ -363,9 +385,9 @@
     <div>
       <ul class="clean">
         <li><strong style="color:#fff;">DE39</strong> — Response Code</li>
-        <li><strong style="color:#fff;">DE41</strong> — Terminal ID</li>
+        <li><strong style="color:#fff;">DE70</strong> — NMC (Network Mgmt Code)</li>
+        <li><strong style="color:#a78bfa;">DE48</strong> — <span style="color:#a78bfa;">Additional Data (Agent Context)</span></li>
         <li><strong style="color:#fff;">DE49</strong> — Currency Code</li>
-        <li><strong style="color:#fff;">DE70</strong> — NMC (Network Mgmt)</li>
       </ul>
     </div>
   </div>
@@ -375,9 +397,9 @@
      SLIDE 4 — FRAUD ENGINE
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">4 / 13</span>
+  <span class="slide-num">4 / 15</span>
   <div class="section-label lbl-orange">FRAUD DETECTION</div>
-  <h2>Real-time Fraud Engine</h2>
+  <h2>Real-time Fraud Engine — 8 Rules</h2>
 
   <div class="grid-2" style="margin-bottom:28px; align-items:start;">
     <div>
@@ -386,6 +408,7 @@
         <p style="font-size:.875rem; color:#cbd5e1; margin:0;">
           Every transaction is scored <strong style="color:#fb923c;">before</strong> it reaches the issuer.
           Each enabled rule contributes a weight to the aggregate score (0–100).
+          Agent-aware rules additionally inspect DE48 context fields.
         </p>
       </div>
       <table>
@@ -398,14 +421,20 @@
       </table>
     </div>
     <div>
-      <h3>5 Rule Implementations</h3>
-      <ul class="clean">
-        <li><strong style="color:#fff;">Velocity</strong> — Max N transactions per card per hour</li>
-        <li><strong style="color:#fff;">Amount Limit</strong> — Flags amounts above configurable threshold ($5k default)</li>
-        <li><strong style="color:#fff;">Blacklist</strong> — Instant DECLINE for blacklisted PANs (SHA-256 hashed)</li>
-        <li><strong style="color:#fff;">Decline Velocity</strong> — Detects card-testing: ≥3 declines/hour</li>
-        <li><strong style="color:#fff;">MCC Risk</strong> — Flags high-risk merchant categories (gambling, pawnshops, crypto)</li>
-      </ul>
+      <h3>5 Core Rules + 3 Agent-Aware Rules</h3>
+      <table>
+        <thead><tr><th>Rule</th><th>Trigger</th><th>Wt</th></tr></thead>
+        <tbody>
+          <tr><td class="orange">Velocity</td><td>Max N txns per card per hour</td><td>25</td></tr>
+          <tr><td class="orange">Amount Limit</td><td>Amount above $5k threshold</td><td>30</td></tr>
+          <tr><td class="red">Blacklist</td><td>SHA-256 PAN in blacklist → instant DECLINE</td><td>100</td></tr>
+          <tr><td class="red">Decline Velocity</td><td>≥3 declines / hour → card-testing</td><td>60</td></tr>
+          <tr><td class="orange">MCC Risk</td><td>High-risk MCC (gambling, pawnshops, crypto)</td><td>20</td></tr>
+          <tr><td style="color:#a78bfa;">Agent Velocity</td><td>&gt;10 agent txns in 5 min window</td><td>35</td></tr>
+          <tr><td style="color:#a78bfa;">Agent Scope</td><td>MCC not in DE48 SCP scope list</td><td>45</td></tr>
+          <tr><td style="color:#a78bfa;">Agent Chain</td><td>CHN depth &gt;3 or unknown sub-agent</td><td>40</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -430,7 +459,7 @@
      SLIDE 5 — CLEARING & SETTLEMENT
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">5 / 13</span>
+  <span class="slide-num">5 / 15</span>
   <div class="section-label lbl-green">CLEARING &amp; SETTLEMENT</div>
   <h2>End-of-Day Processing</h2>
 
@@ -500,7 +529,7 @@
      SLIDE 6 — INTERCHANGE FEE ENGINE
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">6 / 13</span>
+  <span class="slide-num">6 / 15</span>
   <div class="section-label lbl-cyan">INTERCHANGE PRICING</div>
   <h2>Interchange &amp; Network Fee Engine</h2>
 
@@ -637,7 +666,7 @@
      SLIDE 7 — REST API & DASHBOARD
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">7 / 13</span>
+  <span class="slide-num">7 / 15</span>
   <div class="section-label lbl-purple">MANAGEMENT INTERFACES</div>
   <h2>REST API &amp; Admin Dashboard</h2>
 
@@ -658,6 +687,7 @@
           <tr><td class="green">Clearing</td><td>List batches, trigger run</td></tr>
           <tr><td class="green">Settlement</td><td>List records, CSV export with fee columns</td></tr>
           <tr><td class="cyan">Interchange</td><td>CRUD rates · Fee report (JSON + CSV)</td></tr>
+          <tr><td style="color:#a78bfa;">Agents</td><td>Register · list · update · stats (active, txns today, volume)</td></tr>
           <tr><td class="purple">Test Lab</td><td>List scenarios, run, view results</td></tr>
         </tbody>
       </table>
@@ -682,9 +712,9 @@
           <span style="flex:1; text-align:center; font-size:.65rem; color:#7d8590;">localhost:8080</span>
         </div>
         <!-- App layout -->
-        <div style="display:flex; height:260px; background:#0d1117;">
+        <div style="display:flex; height:280px; background:#0d1117;">
           <!-- Mini sidebar -->
-          <div style="width:110px; background:#161b22; border-right:1px solid #30363d; padding:10px 6px; display:flex; flex-direction:column; gap:2px; flex-shrink:0;">
+          <div style="width:120px; background:#161b22; border-right:1px solid #30363d; padding:10px 6px; display:flex; flex-direction:column; gap:2px; flex-shrink:0;">
             <div style="font-size:.55rem; font-weight:700; color:#e6edf3; padding:4px 6px 8px; border-bottom:1px solid #30363d; margin-bottom:6px; display:flex; align-items:center; gap:5px;">
               <span style="background:linear-gradient(135deg,#2f81f7,#0dcaf0);border-radius:4px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:.5rem;color:#fff;font-weight:800;">CN</span>
               Card Network
@@ -699,14 +729,15 @@
             <div style="font-size:.45rem; padding:6px 6px 2px; color:#7d8590; text-transform:uppercase; letter-spacing:.08em; opacity:.6;">Fraud</div>
             <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">🛡 Rules</div>
             <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">🔔 Alerts</div>
+            <div style="font-size:.55rem; padding:4px 6px; color:#a78bfa; display:flex; align-items:center; gap:4px;">🤖 Agents</div>
             <div style="font-size:.45rem; padding:6px 6px 2px; color:#7d8590; text-transform:uppercase; letter-spacing:.08em; opacity:.6;">Testing</div>
             <div style="font-size:.55rem; padding:4px 6px; color:#7d8590; display:flex; align-items:center; gap:4px;">⚗ Test Lab</div>
           </div>
           <!-- Main area -->
           <div style="flex:1; padding:12px; overflow:hidden;">
             <div style="font-size:.65rem; font-weight:600; color:#e6edf3; padding-bottom:8px; border-bottom:1px solid #30363d; margin-bottom:10px;">Dashboard</div>
-            <!-- 6 stat cards -->
-            <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:5px; margin-bottom:10px;">
+            <!-- 6 stat cards + agent row -->
+            <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:5px; margin-bottom:6px;">
               <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
                 <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#2f81f7,#0dcaf0);"></div>
                 <div style="font-size:.4rem;color:#7d8590;text-transform:uppercase;margin-bottom:2px;">Transactions</div>
@@ -738,6 +769,21 @@
                 <div style="font-size:.8rem;font-weight:700;color:#e6edf3;">$1.35</div>
               </div>
             </div>
+            <!-- Agent Commerce row -->
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-bottom:6px;">
+              <div style="background:#0f0f1e; border:1px solid #4f46e5; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="font-size:.38rem;color:#a78bfa;text-transform:uppercase;margin-bottom:2px;">🤖 Active Agents</div>
+                <div style="font-size:.8rem;font-weight:700;color:#a78bfa;">12</div>
+              </div>
+              <div style="background:#0f0f1e; border:1px solid #4f46e5; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="font-size:.38rem;color:#a78bfa;text-transform:uppercase;margin-bottom:2px;">⚡ Agent Txns Today</div>
+                <div style="font-size:.8rem;font-weight:700;color:#a78bfa;">247</div>
+              </div>
+              <div style="background:#0f0f1e; border:1px solid #4f46e5; border-radius:5px; padding:6px; position:relative; overflow:hidden;">
+                <div style="font-size:.38rem;color:#a78bfa;text-transform:uppercase;margin-bottom:2px;">$ Agent Volume Today</div>
+                <div style="font-size:.8rem;font-weight:700;color:#a78bfa;">$4.2k</div>
+              </div>
+            </div>
             <!-- Bottom cards -->
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px;">
               <div style="background:#161b22; border:1px solid #30363d; border-radius:5px; padding:8px;">
@@ -751,8 +797,7 @@
                   <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#58a6ff;">⇄ Txns</span>
                   <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#f85149;">🔔 Fraud</span>
                   <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#7d8590;">≡ Clear</span>
-                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#7d8590;">$ Fees</span>
-                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #30363d;border-radius:3px;color:#7d8590;">⚗ Lab</span>
+                  <span style="font-size:.4rem;padding:2px 5px;border:1px solid #4f46e5;border-radius:3px;color:#a78bfa;">🤖 Agents</span>
                 </div>
               </div>
             </div>
@@ -761,7 +806,7 @@
       </div>
 
       <p style="font-size:.72rem; color:#64748b; margin-top:10px;">
-        Dark theme (GitHub palette) · Bootstrap Icons nav · Gradient accent stat cards · Hover lift animation · 12 pages
+        Dark theme (GitHub palette) · Bootstrap Icons nav · Gradient accent stat cards · Agent Commerce row · 14 pages
       </p>
     </div>
 
@@ -772,9 +817,9 @@
      SLIDE 8 — TEST COVERAGE
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">8 / 13</span>
+  <span class="slide-num">8 / 15</span>
   <div class="section-label lbl-blue">QUALITY</div>
-  <h2>Test Coverage — 70 Tests, 0 Failures</h2>
+  <h2>Test Coverage — 75 Tests, 0 Failures</h2>
 
   <div class="grid-2" style="align-items:start; margin-bottom:28px;">
     <div>
@@ -798,7 +843,7 @@
       </table>
     </div>
     <div>
-      <h3>Unit &amp; Integration Tests</h3>
+      <h3>Unit, Integration &amp; Agent Tests</h3>
       <ul class="clean" style="margin-bottom:16px;">
         <li><strong style="color:#22d3ee;">InterchangeRateTest</strong> — calculateFee() math, rounding</li>
         <li><strong style="color:#22d3ee;">InterchangeServiceTest</strong> — MCC lookup, DEFAULT fallback, zero return</li>
@@ -813,25 +858,15 @@
         <li><strong style="color:#fff;">GatewayIntegrationTest</strong> — Full TCP stack, Testcontainers PG</li>
         <li><strong style="color:#fff;">AuthorizationE2ETest</strong> — Full auth flow: acquire → fraud → route → issue → respond</li>
         <li><strong style="color:#fff;">LiveAuthDemoTest</strong> — Real-time 0100 approval with human-readable log output</li>
+        <li><strong style="color:#a78bfa;">AgentCommerceTest</strong> — 5 ordered E2E tests: sign-on, approved auth (DE48 echoed), per-txn cap → RC=61, MCC scope → RC=57, sign-off → INACTIVE</li>
         <li><strong style="color:#f59e0b;">VolumeTest</strong> — 3 scenarios: 500 concurrent txns, 200-burst, 100 connection churn cycles</li>
         <li><strong style="color:#f59e0b;">DurationTest</strong> — 2 scenarios: 30-second sustained (≥60 txns), 5-client 20-second (≥100 txns)</li>
       </ul>
       <div class="card accent-green">
         <h3>Infrastructure</h3>
         <p style="font-size:.8rem;">Testcontainers spins up real PostgreSQL with all Flyway migrations
-        applied. Interchange rate seeds verified at integration level.
+        applied (V12 includes agent_registrations table + 3 agent fraud rule seeds).
         ISO 8583 bytes over TCP. Colima (macOS Docker) supported.</p>
-      </div>
-      <div class="card" style="border-color:#f59e0b; margin-top:12px;">
-        <h3 style="color:#fbbf24;">Bug Found &amp; Fixed in Production Validation</h3>
-        <p style="font-size:.8rem;">Browser testing of the new <code style="color:#22d3ee;">/fees</code> page
-        revealed a Thymeleaf template error: <code style="color:#f87171;">#numbers.formatDecimal()</code>
-        must always be wrapped in <code style="color:#38bdf8;">${…}</code>. The pattern
-        <code style="color:#f87171;">'$' + #numbers.formatDecimal(…)</code> was invalid and caused a 500
-        on <code style="color:#22d3ee;">/fees</code>, <code style="color:#22d3ee;">/settlement</code>, and
-        <code style="color:#22d3ee;">/clearing</code>. Fixed using Thymeleaf literal substitution:
-        <code style="color:#4ade80;">|$${#numbers.formatDecimal(…)}|</code>.
-        70/70 tests still pass after the fix.</p>
       </div>
     </div>
   </div>
@@ -841,7 +876,7 @@
      SLIDE 9 — PERFORMANCE TESTING
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">9 / 13</span>
+  <span class="slide-num">9 / 15</span>
   <div class="section-label lbl-orange">PERFORMANCE</div>
   <h2>Volume &amp; Duration Tests — 5 Tests, 0 Failures</h2>
 
@@ -899,7 +934,7 @@
      SLIDE 10 — CHARGEBACK & DISPUTE HANDLING
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">10 / 13</span>
+  <span class="slide-num">10 / 15</span>
   <div class="section-label lbl-orange">CHARGEBACK &amp; DISPUTE HANDLING</div>
   <h2>Chargeback &amp; Dispute Lifecycle</h2>
 
@@ -1012,13 +1047,13 @@
         <thead><tr><th>Code</th><th>Category</th><th>Description</th></tr></thead>
         <tbody>
           <tr><td class="blue">10.1</td><td>EMV Liability Shift</td><td>Counterfeit — chip card used at mag-stripe terminal</td></tr>
-          <tr><td class="blue">10.2</td><td>EMV Liability Shift</td><td>Lost / stolen card at non-chip terminal</td></tr>
           <tr><td class="blue">10.4</td><td>Card-Absent</td><td>Fraudulent card-not-present transaction</td></tr>
-          <tr><td class="blue">11.1</td><td>Card Recovery</td><td>Card recovery bulletin — should have been captured</td></tr>
           <tr><td class="orange">12.6</td><td>Processing Error</td><td>Duplicate processing / paid by other means</td></tr>
           <tr><td class="orange">13.1</td><td>Consumer Dispute</td><td>Merchandise / services not received</td></tr>
-          <tr><td class="orange">13.2</td><td>Consumer Dispute</td><td>Cancelled recurring transaction</td></tr>
-          <tr><td class="red">13.9</td><td>Consumer Dispute</td><td>Non-receipt of cash or load transaction value</td></tr>
+          <tr><td style="color:#a78bfa;">AGT-001</td><td>Agent</td><td>Unauthorized Agent Transaction</td></tr>
+          <tr><td style="color:#a78bfa;">AGT-002</td><td>Agent</td><td>Agent Scope Exceeded</td></tr>
+          <tr><td style="color:#a78bfa;">AGT-003</td><td>Agent</td><td>Agent Intent Mismatch</td></tr>
+          <tr><td style="color:#a78bfa;">AGT-004</td><td>Agent</td><td>Revoked Agent Credentials</td></tr>
         </tbody>
       </table>
     </div>
@@ -1041,10 +1076,262 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     SLIDE 11 — ARCHITECTURE
+     SLIDE 11 — AGENTIC COMMERCE: NATIVE ISO 8583
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">11 / 13</span>
+  <span class="slide-num">11 / 15</span>
+  <div class="section-label lbl-agent">AGENTIC COMMERCE</div>
+  <h2>Agentic Commerce — Native ISO 8583 Protocol</h2>
+
+  <div style="background:#0a0a1a; border:1px solid #4f46e5; border-radius:8px; padding:12px 18px; margin-bottom:20px;">
+    <p style="color:#a78bfa; font-size:.88rem; margin:0;">
+      <strong style="color:#fff;">Why native?</strong> Amex's "Agentic Commerce Experiences" (ACE) is an HTTP overlay on top of card rails — added latency, no network-level spend controls, no multi-agent chain auth, and gated access.
+      This implementation embeds agent context <em>inside the ISO 8583 wire format</em> using DE48, making agentic commerce a first-class citizen of the payment protocol.
+    </p>
+  </div>
+
+  <div class="grid-2" style="align-items:start; gap:28px;">
+    <div>
+      <h3>DE48 Agent Context — Wire Format</h3>
+      <div class="mono" style="margin-bottom:14px; font-size:.78rem; line-height:2;">
+        <span class="hi-agent">AGT</span>:<span class="hi-cyan">AGENT001</span>&nbsp;&nbsp;<span style="color:#334155;">← Agent identifier (max 16 chars)</span><br/>
+        |<span class="hi-agent">INT</span>:<span class="hi-cyan">a3f9b1c2d4e5...</span>&nbsp;&nbsp;<span style="color:#334155;">← SHA-256 intent hash (64 hex)</span><br/>
+        |<span class="hi-agent">CHN</span>:<span class="hi-cyan">ORCHESTRATOR&gt;AGENT001</span>&nbsp;&nbsp;<span style="color:#334155;">← Agent chain (&gt;-delimited)</span><br/>
+        |<span class="hi-agent">SCP</span>:<span class="hi-cyan">5411,5812,4111</span>&nbsp;&nbsp;<span style="color:#334155;">← Allowed MCC list (comma-sep)</span><br/>
+        |<span class="hi-agent">LMT</span>:<span class="hi-orange">10000</span>&nbsp;&nbsp;<span style="color:#334155;">← Per-transaction cap (cents)</span><br/>
+        |<span class="hi-agent">WIN</span>:<span class="hi-cyan">09:00-17:00</span>&nbsp;&nbsp;<span style="color:#334155;">← Allowed time window (HH:mm)</span><br/>
+        |<span class="hi-agent">NCE</span>:<span class="hi-cyan">7f3a9b2c</span>&nbsp;&nbsp;<span style="color:#334155;">← Nonce (replay prevention)</span>
+      </div>
+      <div class="card accent-agent" style="margin-bottom:12px;">
+        <h3>DE48 Field Properties</h3>
+        <p style="font-size:.8rem;">Packager type: <code style="color:#a78bfa;">IFB_LLLCHAR</code> — variable length up to 999 chars.
+        Carried transparently through the network. Echoed back verbatim in the 0110 authorization response.
+        Persisted to the <code style="color:#a78bfa;">transactions</code> table as three columns:
+        <code>agent_id</code>, <code>intent_hash</code>, <code>agent_chain</code>.</p>
+      </div>
+
+      <h3>NMC 080/081 — Agent Sign-On / Sign-Off</h3>
+      <div class="flow" style="margin-bottom:10px; flex-wrap:wrap; gap:4px;">
+        <div class="flow-box agent">0800 NMC=080<br/><span style="font-size:.7rem; color:#64748b;">DE48 agent context</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box agent">AgentRegistrationService<br/><span style="font-size:.7rem; color:#64748b;">upsert AgentRegistration</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box hl">0810 RC=00<br/><span style="font-size:.7rem; color:#64748b;">signed on</span></div>
+      </div>
+      <div class="flow" style="flex-wrap:wrap; gap:4px;">
+        <div class="flow-box agent">0800 NMC=081<br/><span style="font-size:.7rem; color:#64748b;">DE48 agentId</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box spend">Set INACTIVE<br/><span style="font-size:.7rem; color:#64748b;">TX commits first</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box hl">0810 RC=00<br/><span style="font-size:.7rem; color:#64748b;">signed off</span></div>
+      </div>
+      <p style="font-size:.75rem; color:#64748b; margin-top:8px;">
+        Critical: DB transaction commits via <code>TransactionTemplate</code> <em>before</em>
+        <code>channel.writeAndFlush()</code> — prevents race where client reads the 0810 response before the DB row is visible.
+      </p>
+    </div>
+
+    <div>
+      <h3>AgentRegistration — Persistent Registry</h3>
+      <table style="margin-bottom:14px; font-size:.82rem;">
+        <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td style="color:#a78bfa;">agent_id</td><td><code>VARCHAR(16)</code></td><td>Unique identifier, max 16 chars</td></tr>
+          <tr><td>participant_id</td><td><code>UUID FK</code></td><td>Owning acquirer participant</td></tr>
+          <tr><td>public_key</td><td><code>TEXT</code></td><td>Agent public key for audit</td></tr>
+          <tr><td style="color:#a78bfa;">mcc_scope</td><td><code>VARCHAR(255)</code></td><td>Registration-level MCC allowlist</td></tr>
+          <tr><td style="color:#a78bfa;">per_txn_limit</td><td><code>BIGINT</code></td><td>Per-transaction cap (cents)</td></tr>
+          <tr><td style="color:#a78bfa;">daily_limit</td><td><code>BIGINT</code></td><td>Rolling 24h spend cap (cents)</td></tr>
+          <tr><td style="color:#a78bfa;">time_window</td><td><code>VARCHAR(50)</code></td><td>Allowed hours e.g. 09:00-17:00</td></tr>
+          <tr><td>status</td><td><code>ENUM</code></td><td>ACTIVE / INACTIVE / SUSPENDED</td></tr>
+          <tr><td>last_seen_at</td><td><code>TIMESTAMPTZ</code></td><td>Updated on every approved txn</td></tr>
+          <tr><td>expires_at</td><td><code>TIMESTAMPTZ</code></td><td>Optional delegation expiry</td></tr>
+        </tbody>
+      </table>
+
+      <h3>SHA-256 Intent Hash</h3>
+      <div class="card accent-agent" style="margin-bottom:12px;">
+        <p style="font-size:.82rem;">The <code style="color:#a78bfa;">INT</code> field carries a 64-character hex hash of the agent's
+        stated purchase intent (e.g. <em>"buy 3 units of SKU-42 at $33.00 each"</em>).
+        It is persisted to <code>transactions.intent_hash</code> and copied to settlement records
+        at clearing time — creating an <strong style="color:#fff;">immutable, cryptographically-bound audit trail</strong>
+        linking every monetary movement back to the agent's original intent.
+        The network records the hash; the agent self-signs the payload off-chain.</p>
+      </div>
+
+      <h3>Multi-Agent Chain Authentication</h3>
+      <div class="card accent-agent">
+        <p style="font-size:.82rem;">The <code style="color:#a78bfa;">CHN</code> field carries the full delegation chain, e.g.
+        <code>ORCH01&gt;PLANNER&gt;AGENT001</code>. Each <code>&gt;</code> separator represents one hop.
+        The <strong style="color:#fff;">AgentChainAnomalyRule</strong> counts delimiters and triggers a fraud score
+        contribution if depth exceeds 3 — preventing runaway sub-agent spawning.
+        Every transaction record stores the full chain for forensic audit.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 12 — AGENTIC COMMERCE: SPEND CONTROLS & FRAUD
+════════════════════════════════════════════════════════ -->
+<div class="slide">
+  <span class="slide-num">12 / 15</span>
+  <div class="section-label lbl-agent">AGENTIC COMMERCE</div>
+  <h2>Spend Controls, Agent Fraud Rules &amp; Management API</h2>
+
+  <div class="grid-2" style="align-items:start; gap:28px;">
+    <div>
+      <h3>Spend Control Pipeline — Enforced Pre-Authorization</h3>
+      <p style="font-size:.8rem; color:#64748b; margin-bottom:10px;">
+        Spend controls run <strong style="color:#fb923c;">before</strong> fraud scoring and <strong style="color:#fb923c;">before</strong> issuer contact.
+        A single short-circuit response is sent immediately — no issuer call, no fraud alert overhead.
+      </p>
+      <div class="flow" style="flex-wrap:wrap; gap:4px; margin-bottom:14px;">
+        <div class="flow-box agent">Parse DE48<br/><span style="font-size:.65rem; color:#64748b;">AgentContext</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box spend">Per-Txn Cap<br/><span style="font-size:.65rem; color:#64748b;">LMT field</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box spend">Daily Limit<br/><span style="font-size:.65rem; color:#64748b;">DB rolling sum</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box spend">MCC Scope<br/><span style="font-size:.65rem; color:#64748b;">SCP field</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box spend">Time Window<br/><span style="font-size:.65rem; color:#64748b;">WIN field</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box fraud">Fraud Engine<br/><span style="font-size:.65rem; color:#64748b;">8 rules</span></div>
+      </div>
+
+      <table style="margin-bottom:16px;">
+        <thead><tr><th>Control</th><th>Source</th><th>Violation RC</th><th>Short-circuits?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="color:#a78bfa;">Per-Transaction Cap</td>
+            <td>DE48 <code>LMT</code> field</td>
+            <td><span class="badge badge-orange">RC=61</span> Exceeds Limit</td>
+            <td>Yes — immediate 0110</td>
+          </tr>
+          <tr>
+            <td style="color:#a78bfa;">Daily Rolling Limit</td>
+            <td>AgentRegistration.dailyLimit</td>
+            <td><span class="badge badge-orange">RC=61</span> Exceeds Limit</td>
+            <td>Yes — immediate 0110</td>
+          </tr>
+          <tr>
+            <td style="color:#a78bfa;">MCC Scope</td>
+            <td>DE48 <code>SCP</code> / Registration</td>
+            <td><span class="badge badge-red">RC=57</span> Not Permitted</td>
+            <td>Yes — immediate 0110</td>
+          </tr>
+          <tr>
+            <td style="color:#a78bfa;">Time Window</td>
+            <td>DE48 <code>WIN</code> field</td>
+            <td><span class="badge badge-orange">RC=54</span> Delegation Expired</td>
+            <td>Yes — immediate 0110</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card accent-agent">
+        <h3>MCC Scope Precedence</h3>
+        <p style="font-size:.8rem;">Registration-level scope (set at sign-on) <strong style="color:#fff;">overrides</strong> DE48 per-transaction scope
+        when both are present — the registered allowlist is the authoritative source of truth.
+        The DE48 scope is checked as a secondary constraint if the registration has no scope set.</p>
+      </div>
+    </div>
+
+    <div>
+      <h3>3 New Agent-Aware Fraud Rules</h3>
+      <table style="margin-bottom:16px; font-size:.82rem;">
+        <thead><tr><th>Rule</th><th>Type</th><th>Default Config</th><th>Score</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="color:#a78bfa;">Agent Velocity</td>
+            <td><code>AGENT_VELOCITY</code></td>
+            <td>&gt;10 txns in 5 min window</td>
+            <td>+35</td>
+            <td><span class="badge badge-orange">FLAG</span></td>
+          </tr>
+          <tr>
+            <td style="color:#a78bfa;">Agent Scope Violation</td>
+            <td><code>AGENT_SCOPE</code></td>
+            <td>SCP field present, MCC mismatch</td>
+            <td>+45</td>
+            <td><span class="badge badge-orange">FLAG</span></td>
+          </tr>
+          <tr>
+            <td style="color:#a78bfa;">Agent Chain Anomaly</td>
+            <td><code>AGENT_CHAIN</code></td>
+            <td>Chain depth &gt;3 or unknown agent</td>
+            <td>+40</td>
+            <td><span class="badge badge-orange">FLAG</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:.75rem; color:#64748b; margin-bottom:14px;">
+        Rules are stored in <code>fraud_rule_configs</code> with JSON parameters and seeded by V12 migration.
+        They are auto-discovered by <code>FraudDetectionService</code> via Spring component scanning — no code changes needed to add new rules.
+      </p>
+
+      <h3>REST API — Agent Management</h3>
+      <table style="margin-bottom:14px; font-size:.82rem;">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-blue">GET</span></td><td><code>/api/agents</code></td><td>Paginated list; filter by status</td></tr>
+          <tr><td><span class="badge badge-blue">GET</span></td><td><code>/api/agents/{agentId}</code></td><td>Full agent detail + limits</td></tr>
+          <tr><td><span class="badge badge-green">POST</span></td><td><code>/api/agents</code></td><td>Register agent programmatically</td></tr>
+          <tr><td><span class="badge badge-orange">PUT</span></td><td><code>/api/agents/{agentId}</code></td><td>Update status, limits, MCC scope</td></tr>
+          <tr><td><span class="badge badge-blue">GET</span></td><td><code>/api/agents/stats</code></td><td>Active count, txns today, volume today</td></tr>
+        </tbody>
+      </table>
+
+      <h3>vs. Amex Agentic Commerce Experiences (ACE)</h3>
+      <table style="font-size:.79rem;">
+        <thead><tr><th>Feature</th><th style="color:#fb923c;">Amex ACE</th><th style="color:#a78bfa;">This Network</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Protocol layer</td>
+            <td class="orange">HTTP overlay on card rails</td>
+            <td style="color:#a78bfa;">Native ISO 8583 DE48</td>
+          </tr>
+          <tr>
+            <td>API access</td>
+            <td class="orange">Gated / invite-only</td>
+            <td style="color:#a78bfa;">Open REST API</td>
+          </tr>
+          <tr>
+            <td>Multi-agent chain</td>
+            <td class="red">Not supported</td>
+            <td style="color:#a78bfa;">CHN field, depth enforcement</td>
+          </tr>
+          <tr>
+            <td>Network spend controls</td>
+            <td class="red">None at network level</td>
+            <td style="color:#a78bfa;">Per-txn, daily, MCC, time</td>
+          </tr>
+          <tr>
+            <td>Intent hash / audit</td>
+            <td class="red">None</td>
+            <td style="color:#a78bfa;">SHA-256, persisted to settlement</td>
+          </tr>
+          <tr>
+            <td>Agent-aware fraud rules</td>
+            <td class="red">External / none</td>
+            <td style="color:#a78bfa;">3 native rules (velocity, scope, chain)</td>
+          </tr>
+          <tr>
+            <td>Agent dispute codes</td>
+            <td class="red">None</td>
+            <td style="color:#a78bfa;">AGT-001 through AGT-004</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SLIDE 13 — ARCHITECTURE
+════════════════════════════════════════════════════════ -->
+<div class="slide">
+  <span class="slide-num">13 / 15</span>
   <div class="section-label lbl-gray">ARCHITECTURE</div>
   <h2>System Architecture</h2>
 
@@ -1058,6 +1345,10 @@
       <div class="arch-box" style="border-color:#166534; margin-top:auto;">
         <strong class="green">Issuer Banks</strong>
         <span>TCP connect port 8583</span>
+      </div>
+      <div class="arch-box" style="border-color:#4f46e5; margin-top:4px;">
+        <strong style="color:#a78bfa;">AI Agents</strong>
+        <span>NMC 080/081 sign-on, DE48 in every txn</span>
       </div>
     </div>
     <div class="arch-sep"></div>
@@ -1077,7 +1368,11 @@
       <div class="arch-label">BUSINESS LOGIC</div>
       <div class="arch-box" style="border-color:#431407;">
         <strong class="orange">FraudDetectionService</strong>
-        <span>5 rules · Score aggregation · DB-cached config</span>
+        <span>8 rules · Score aggregation · DB-cached config</span>
+      </div>
+      <div class="arch-box" style="border-color:#4f46e5;">
+        <strong style="color:#a78bfa;">AgentRegistrationService</strong>
+        <span>NMC 080/081 · DE48 spend controls · daily limit · MCC scope · time window</span>
       </div>
       <div class="arch-box">
         <strong style="color:#fff;">BinRouter</strong>
@@ -1089,7 +1384,7 @@
       </div>
       <div class="arch-box">
         <strong style="color:#fff;">ClearingEngine · SettlementEngine</strong>
-        <span>Daily batch jobs · ShedLock · fee-adjusted net positions</span>
+        <span>Daily batch jobs · ShedLock · fee-adjusted net positions · intent_hash copied</span>
       </div>
     </div>
     <div class="arch-sep"></div>
@@ -1097,11 +1392,11 @@
       <div class="arch-label">PERSISTENCE</div>
       <div class="arch-box" style="border-color:#14532d;">
         <strong class="green">PostgreSQL 16</strong>
-        <span>10 migrations · 11 entities · interchange_rates table</span>
+        <span>12 migrations · 12 entities · agent_registrations table</span>
       </div>
       <div class="arch-box">
         <strong style="color:#fff;">Spring Data JPA</strong>
-        <span>11 repositories · Hikari pool</span>
+        <span>12 repositories · Hikari pool</span>
       </div>
     </div>
   </div>
@@ -1109,17 +1404,17 @@
   <h3>Technology Stack</h3>
   <div class="grid-4">
     <div class="card"><h3>Java 21 + Spring Boot 3.4</h3><p>Virtual threads ready, modern Spring ecosystem</p></div>
-    <div class="card"><h3>jPOS 2.1.9</h3><p>ISO 8583 encode/decode via xml packager config</p></div>
+    <div class="card"><h3>jPOS 2.1.9</h3><p>ISO 8583 encode/decode via xml packager config; DE48 IFB_LLLCHAR for agent context</p></div>
     <div class="card"><h3>Netty 4.1</h3><p>Non-blocking TCP gateway, async handlers</p></div>
-    <div class="card"><h3>Flyway 11</h3><p>10 versioned migrations, schema owned by Flyway</p></div>
+    <div class="card"><h3>Flyway 11</h3><p>12 versioned migrations; V12 adds agent_registrations + 3 agent fraud rule seeds</p></div>
   </div>
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     SLIDE 12 — WHAT'S MISSING
+     SLIDE 14 — WHAT'S MISSING
 ════════════════════════════════════════════════════════ -->
 <div class="slide">
-  <span class="slide-num">12 / 13</span>
+  <span class="slide-num">14 / 15</span>
   <div class="section-label lbl-red">GAPS &amp; ROADMAP</div>
   <h2>What's Still Missing</h2>
 
@@ -1154,6 +1449,13 @@
           <p>Real networks apply multi-tier rates (qualified / non-qualified / rewards). Current model uses a single rate per MCC with no card-type differentiation.</p>
         </div>
       </div>
+      <div class="gap-item">
+        <div class="gap-dot" style="background:#a78bfa;"></div>
+        <div class="gap-text">
+          <strong>Agent Credential Verification</strong>
+          <p>DE48 <code>NCE</code> nonce is recorded but not cryptographically verified. A full implementation would validate agent signatures off-chain before authorizing.</p>
+        </div>
+      </div>
     </div>
     <div>
       <h3>Operational Gaps</h3>
@@ -1175,14 +1477,14 @@
         <div class="gap-dot" style="background:#fb923c;"></div>
         <div class="gap-text">
           <strong>Real-time Reporting &amp; Charts</strong>
-          <p>Dashboard shows daily totals only. No hourly charts, trend lines, fraud rate over time, or fee revenue trends.</p>
+          <p>Dashboard shows daily totals only. No hourly charts, trend lines, fraud rate over time, or agent commerce trend analysis.</p>
         </div>
       </div>
       <div class="gap-item">
         <div class="gap-dot" style="background:#fb923c;"></div>
         <div class="gap-text">
           <strong>Distributed Tracing (OTEL / Zipkin)</strong>
-          <p>No trace IDs propagated through multi-hop flows. Debugging a slow issuer requires log correlation by STAN.</p>
+          <p>No trace IDs propagated through multi-hop flows. Debugging a slow issuer or tracing an agent chain requires log correlation by STAN.</p>
         </div>
       </div>
       <div class="gap-item">
@@ -1197,11 +1499,11 @@
 </div>
 
 <!-- ════════════════════════════════════════════════════════
-     SLIDE 13 — SUMMARY
+     SLIDE 15 — SUMMARY
 ════════════════════════════════════════════════════════ -->
 <div class="slide cover" style="background: linear-gradient(135deg, #0a1628 0%, #0d2137 60%, #111827 100%);">
-  <span class="slide-num" style="color:#334155;">13 / 13</span>
-  <div style="max-width:900px; width:100%;">
+  <span class="slide-num" style="color:#334155;">15 / 15</span>
+  <div style="max-width:960px; width:100%;">
     <div class="section-label lbl-gray" style="margin-bottom:24px;">SUMMARY</div>
     <h2 style="font-size:2.5rem; margin-bottom:36px;">What We Have vs. What's Next</h2>
 
@@ -1210,16 +1512,21 @@
         <h3 style="color:#4ade80; font-size:.85rem;">BUILT &amp; WORKING</h3>
         <ul class="clean" style="margin-top:8px;">
           <li>Full ISO 8583 switch (0100, 0200, 0400, 0800)</li>
-          <li>Real-time fraud engine — 5 configurable rules</li>
+          <li>Real-time fraud engine — 8 configurable rules (5 core + 3 agent-aware)</li>
           <li>BIN routing — PAN → issuer bank</li>
           <li>Interchange &amp; network fee calculation — 7 seeded rates</li>
           <li>Clearing &amp; settlement with fee-adjusted net positions</li>
           <li>Fee schedule management &amp; per-participant fee report</li>
           <li>Chargeback &amp; dispute handling — full lifecycle, reason codes, REST API</li>
-          <li>Operations dashboard — 12 pages</li>
-          <li>REST API — 35+ endpoints</li>
+          <li style="color:#a78bfa;"><strong style="color:#a78bfa;">Native agentic commerce</strong> — DE48 agent context, NMC 080/081 sign-on/off</li>
+          <li style="color:#a78bfa;">Network-level spend controls — per-txn cap, daily limit, MCC scope, time window</li>
+          <li style="color:#a78bfa;">SHA-256 intent hash anchored in transactions &amp; settlement records</li>
+          <li style="color:#a78bfa;">Multi-agent chain authentication (CHN field, depth enforcement)</li>
+          <li style="color:#a78bfa;">Agent-specific chargeback codes AGT-001 through AGT-004</li>
+          <li>Operations dashboard — 14 pages including agent registry &amp; agent commerce stats</li>
+          <li>REST API — 40+ endpoints including /api/agents</li>
           <li>Interactive Test Lab — 12 scenarios</li>
-          <li>70 automated tests (unit + integration + volume + duration)</li>
+          <li>75 automated tests (unit + integration + agent + volume + duration)</li>
           <li>Terraform IaC for AWS ECS Fargate multi-AZ</li>
         </ul>
       </div>
@@ -1227,10 +1534,11 @@
         <h3 style="color:#f87171; font-size:.85rem;">NEXT PRIORITIES</h3>
         <ul class="clean" style="margin-top:8px;">
           <li>Duplicate / retransmission detection on STAN</li>
+          <li>Agent credential cryptographic verification (nonce + signature)</li>
           <li>Tiered interchange (qualified / non-qualified / rewards)</li>
           <li>Role-based access control</li>
           <li>Audit trail for config changes</li>
-          <li>Real-time charts &amp; trend reporting</li>
+          <li>Real-time charts &amp; trend reporting (incl. agent commerce analytics)</li>
           <li>3D Secure / EMV authentication data</li>
           <li>Distributed tracing (OTEL)</li>
           <li>HTTPS + ACM cert (AWS deployment)</li>
@@ -1238,17 +1546,22 @@
       </div>
     </div>
 
-    <div class="grid-4" style="max-width:700px; margin:0 auto;">
+    <div class="grid-5" style="max-width:820px; margin:0 auto; gap:20px;">
       <div class="kpi"><span class="num blue">4</span><span class="lbl">Message Types</span></div>
-      <div class="kpi"><span class="num green">5</span><span class="lbl">Fraud Rules</span></div>
+      <div class="kpi"><span class="num orange">8</span><span class="lbl">Fraud Rules</span></div>
       <div class="kpi"><span class="num cyan">7</span><span class="lbl">Fee Rate Rules</span></div>
-      <div class="kpi"><span class="num orange">70</span><span class="lbl">Tests Passing</span></div>
+      <div class="kpi"><span class="num green">75</span><span class="lbl">Tests Passing</span></div>
+      <div class="kpi">
+        <span class="num agent" style="font-size:2rem; letter-spacing:-1px;">080/081</span>
+        <span class="lbl" style="color:#a78bfa; display:block;">Agent Sign-On/Off</span>
+        <span style="font-size:.65rem; color:#64748b; display:block; margin-top:4px; line-height:1.4;">Agents register natively<br/>over ISO 8583 — no HTTP overlay</span>
+      </div>
     </div>
   </div>
 </div>
 
 <footer>
-  Card Network — ISO 8583 Payment Switch &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; March 2026
+  Card Network — ISO 8583 Payment Switch &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; April 2026
 </footer>
 
 </body>
